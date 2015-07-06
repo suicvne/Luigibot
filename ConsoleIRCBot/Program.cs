@@ -85,7 +85,7 @@ namespace ConsoleIRCBot
             String[] split = IrcCommand.Split(new char[]{' '}, 2);
 
             if (split[1].Contains("353"))
-                Console.WriteLine("Updating names list..");
+            { }
             else if (split[1].Contains("366"))
             { /*nothing, these are annoying*/ }
             else if (!split[1].Contains("421") && !split[1].Contains("Unknown command"))

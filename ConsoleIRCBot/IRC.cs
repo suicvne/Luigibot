@@ -184,7 +184,7 @@ namespace System.Net
                             case "366": /*this.IrcEndNamesList(commandParts);*/ break;
                             case "372": /*this.IrcMOTD(commandParts);*/ break;
                             case "376": /*this.IrcEndMOTD(commandParts);*/ break;
-                            case "421": this.IrcCheckSlap(commandParts); break;
+                            case "421": this.CheckWhichUnknown(commandParts); break;
                             default: this.IrcServerMessage(commandParts); break;
                         }
                     }
@@ -255,6 +255,19 @@ namespace System.Net
         } /* IrcNamesList */
 	
 
+        private void CheckWhichUnknown(string[] IrcCommand)
+        {
+            String ff = IrcCommand[3];
+            if(ff.Contains("Slap"))
+                IrcCheckSlap(IrcCommand);
+        }
+
+        private void Irc42(string[] IrcCommand)
+        {
+            IrcWriter.WriteLine("PRIVMSG {0} :The Answer to Life, the Universe, and Everything.", IrcChannel);
+            IrcWriter.Flush();
+        }
+
         private void IrcCheckSlap(string[] IrcCommand)
         {
             String fullUserID = IrcCommand[0];
@@ -287,16 +300,16 @@ namespace System.Net
                 }
                 if (exists)
                 {
-                    IrcWriter.WriteLine("PRIVMSG {0} :{1} slaps {2} with a giant fish.", IrcChannel, sender, recipient);
+                    IrcWriter.WriteLine("PRIVMSG {0} :" + "\x01" + "ACTION slaps {2} with a giant fish.\x01", IrcChannel, sender, recipient);
                     //IrcWriter.WriteLine("CNOTICE * {0} :{1} slaps {2} with a giant fish.", IrcChannel, sender, recipient);
-                    		IrcWriter.Flush();
-                		}
-                		else
-                		{
-                    		IrcWriter.WriteLine(String.Format("PRIVMSG {0} :That user doesn't exist!", IrcChannel));
-                    		IrcWriter.Flush();
-                		}
-            	}
+                    IrcWriter.Flush();
+                }
+                else
+                {
+                 	IrcWriter.WriteLine(String.Format("PRIVMSG {0} :That user doesn't exist!", IrcChannel));
+                  	IrcWriter.Flush();
+                }
+            }
         }
 
         private void IrcServerMessage(string[] IrcCommand)
