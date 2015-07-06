@@ -254,13 +254,9 @@ namespace System.Net
             }
         } /* IrcNamesList */
 	
-	private long elapsedTime = 0;
 
         private void IrcCheckSlap(string[] IrcCommand)
         {
-		if(elapsedTime == 5000)
-{
-		elapsedTime = 0;
             String fullUserID = IrcCommand[0];
 
             if (IrcCommand[1].Contains("421"))
@@ -300,8 +296,7 @@ namespace System.Net
                     		IrcWriter.WriteLine(String.Format("PRIVMSG {0} :That user doesn't exist!", IrcChannel));
                     		IrcWriter.Flush();
                 		}
-            		}
-		}
+            	}
         }
 
         private void IrcServerMessage(string[] IrcCommand)
