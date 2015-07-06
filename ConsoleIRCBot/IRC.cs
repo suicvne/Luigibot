@@ -211,14 +211,8 @@ namespace System.Net
                             case "QUIT": this.IrcQuit(commandParts); break;
                         }
                     }
-		    elapsedTime += 1000;
-			if(elapsedTime > 5000)
-				elapsedTime = 0;
-                }
 
-                this.IrcWriter.Close();
-                this.IrcReader.Close();
-                this.IrcConnection.Close();
+                }
             }
         } /* Connect */
         #endregion
