@@ -105,7 +105,7 @@ namespace Luigibot2
                 Console.ForegroundColor = ConsoleColor.White;
 
                 Console.ForegroundColor = ConsoleColor.Green;
-                client.JoinChannel("#luigibot");
+                client.JoinChannel("#smbx");
                 Console.WriteLine("Connected!");
                 Console.ForegroundColor = ConsoleColor.White;
 
