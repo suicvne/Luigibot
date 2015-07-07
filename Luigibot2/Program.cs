@@ -183,7 +183,7 @@ namespace Luigibot2
                 if (eightballEnabled)
                 {
                     int ranMessage = random.Next(EightballMessages.Length - 1);
-                    if (command.ToLower().Contains("waluigibot1337"))
+                    if (command.ToLower().Contains("waluigibot1337") || command.ToLower().Contains("waluigibot"))
                         client.SendRawMessage("PRIVMSG {0} :Waluigibot is a tool and will never come to fruition.", client.Channels[0].Name);
                     else
                         client.SendRawMessage("PRIVMSG {0} :{1}", client.Channels[0].Name, EightballMessages[ranMessage]);
