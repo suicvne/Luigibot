@@ -137,6 +137,12 @@ namespace System.Net
         #endregion
 
         #region Public Methods
+        public void SendChannelMessage(string message)
+        {
+            this.IrcWriter.WriteLine("PRIVMSG {0} :{1}", this.IrcChannel, message);
+            this.IrcWriter.Flush();
+        }
+
         public void Connect(string IrcServer, int IrcPort)
         {
             this.IrcServer = IrcServer;

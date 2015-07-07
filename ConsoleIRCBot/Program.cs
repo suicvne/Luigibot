@@ -83,13 +83,15 @@ namespace ConsoleIRCBot
             //:Luigifan2010!~mike@fl-71-52-118-194.dhcp.embarqhsd.net PRIVMSG #luigibot :test
 
             String[] split = IrcCommand.Split(new char[]{' '}, 2);
+            String fullUserID = split[0];
+            string sender = fullUserID.Split(new char[] { '!' }, 2)[0];
 
             if (split[1].Contains("353"))
             { }
             else if (split[1].Contains("366"))
             { /*nothing, these are annoying*/ }
             else if (!split[1].Contains("421") && !split[1].Contains("Unknown command"))
-                Console.WriteLine(split[1]);
+                Console.WriteLine(sender.Trim(':') + ": " + split[1]);
 
             String split1 = split[1];
             if(split[1].Contains("PRIVMSG"))
