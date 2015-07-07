@@ -40,9 +40,19 @@ namespace Luigibot2
                 if(input.StartsWith("/"))
                 {
                     if (input.StartsWith("/enable8ball") || input.StartsWith("/enableeightball"))
+                    {
                         eightballEnabled = true;
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                        Console.WriteLine("Enabling Eight Ball");
+                        Console.ForegroundColor = ConsoleColor.White;
+                    }
                     else if (input.StartsWith("/disable8ball") || input.StartsWith("disableeightball"))
+                    {
                         eightballEnabled = false;
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                        Console.WriteLine("Disabling Eight Ball");
+                        Console.ForegroundColor = ConsoleColor.White;
+                    }
                 }
                 else
                 {
@@ -182,6 +192,9 @@ namespace Luigibot2
                     || sender.Nick.ToLower() == "ghosthawk"
                     || sender.Nick.ToLower() == "aeromatter")
                     eightballEnabled = true;
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.WriteLine("Enabling Eight Ball");
+                Console.ForegroundColor = ConsoleColor.White;
             }
             if (command.StartsWith("!disable8ball") || command.StartsWith("!disableeightball"))
             {
@@ -190,6 +203,9 @@ namespace Luigibot2
                     || sender.Nick.ToLower() == "ghosthawk"
                     || sender.Nick.ToLower() == "aeromatter")
                     eightballEnabled = false;
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.WriteLine("Disabling Eight Ball");
+                Console.ForegroundColor = ConsoleColor.White;
             }
             if(command.StartsWith("!selfdestruct"))
             {
