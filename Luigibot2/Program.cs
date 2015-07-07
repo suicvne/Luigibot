@@ -101,11 +101,11 @@ namespace Luigibot2
             client.ConnectionComplete += (s, e) => 
             {
                 Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine("Connected! Joining #luigibot..");
+                Console.WriteLine("Connected! Joining #smbx..");
                 Console.ForegroundColor = ConsoleColor.White;
 
                 Console.ForegroundColor = ConsoleColor.Green;
-                client.JoinChannel("#smbx");
+                client.JoinChannel("#luigibot");
                 Console.WriteLine("Connected!");
                 Console.ForegroundColor = ConsoleColor.White;
 
@@ -156,20 +156,24 @@ namespace Luigibot2
                 {
                     var listCopy = UsersList;
                     bool foundUser = false;
-                    foreach (IrcUserAndSeen user in listCopy)
+                    try
                     {
-                        if (user.User.Nick.ToLower() == splitCommand[1].ToLower().Trim())
+                        foreach (IrcUserAndSeen user in listCopy)
                         {
-                            if (user.User.Nick == client.User.Nick)
-                                client.SendRawMessage("PRIVMSG {0} :What'd I do? :(", client.Channels[0].Name);
-                            else
-                                client.SendRawMessage("PRIVMSG {0} :" + "\x01" + "ACTION slaps {1} with a giant fish.\x01", client.Channels[0].Name, user.User.Nick);
-                            foundUser = true;
-                            break;
+                            if (user.User.Nick.ToLower() == splitCommand[1].ToLower().Trim())
+                            {
+                                if (user.User.Nick == client.User.Nick)
+                                    client.SendRawMessage("PRIVMSG {0} :What'd I do? :(", client.Channels[0].Name);
+                                else
+                                    client.SendRawMessage("PRIVMSG {0} :" + "\x01" + "ACTION slaps {1} with a giant fish.\x01", client.Channels[0].Name, user.User.Nick);
+                                foundUser = true;
+                                break;
+                            }
                         }
+                        if (!foundUser)
+                            client.SendRawMessage("PRIVMSG {0} :User not found!");
                     }
-                    if (!foundUser)
-                        client.SendRawMessage("PRIVMSG {0} :User not found!");
+                    catch (Exception ex) { }
                 }
                 else
                     client.SendRawMessage("PRIVMSG {0} :Slap who?", client.Channels[0].Name);
