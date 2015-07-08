@@ -97,7 +97,7 @@ namespace Luigibot2
             Console.WriteLine("Connecting...");
             Console.ForegroundColor = ConsoleColor.White;
 
-            client = new IrcClient("irc.stardustfields.net", new IrcUser("Luigibot2015", "luigibot2"));
+            client = new IrcClient("irc.stardustfields.net", new IrcUser("LuigibotTest", "luigibot3"));
             client.ConnectionComplete += (s, e) => 
             {
                 Console.ForegroundColor = ConsoleColor.Green;
@@ -113,6 +113,11 @@ namespace Luigibot2
             };
             client.UserPartedChannel += (s, e) =>
                 {
+					foreach(IrcUser u in UserDatabase)
+					{
+						if(u == e)
+							UserDatabase.Remove(u);
+					}
                     DateTime now = DateTime.Now;
                     UserDatabase.Add(new IrcUserAndSeen(e.User, now));
                 };
@@ -120,7 +125,6 @@ namespace Luigibot2
                 {
                     if(e.User.Nick != client.User.Nick)
                         client.SendAction("welcomes " + e.User.Nick + "!", client.Channels[0].Name);
-                    UsersList.Add(new IrcUserAndSeen(e.User));
                 };
             client.NoticeRecieved += (s, e) =>
             {
