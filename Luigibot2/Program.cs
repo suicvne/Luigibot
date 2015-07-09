@@ -1,4 +1,6 @@
 ﻿using ChatSharp;
+using IF.Lastfm.Core.Api;
+using IF.Lastfm.Core.Objects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -120,7 +122,7 @@ namespace Luigibot2
 							UserDatabase.Remove(u);
 					}
                     UserDatabase.Add(new IrcUserAndSeen(e.User, now));
-                    Console.Beep(4400, 1000);
+                    //Console.Beep(4400, 1000);
                     Console.WriteLine("Added new user to database {0} left at {1}", e.User.Nick, now.ToString());
                 };
             client.UserJoinedChannel += (s, e) =>
@@ -232,6 +234,35 @@ namespace Luigibot2
                         client.SendRawMessage("PRIVMSG {0} :{1}", client.Channels[0].Name, EightballMessages[ranMessage]);
                 }
             }
+            if(command.StartsWith("!lastfm"))
+            {
+                string[] split = command.Split(new char[] { ' ' }, 2);
+                if(split.Length > 1)
+                {
+                    try
+                    {
+                        var lastfmClient = new LastfmClient("4de0532fe30150ee7a553e160fbbe0e0", "0686c5e41f20d2dc80b64958f2df0f0c");
+                        var response = lastfmClient.User.GetRecentScrobbles(split[1].ToString(), null, 0, 1);
+                        LastTrack lastTrack = response.Result.Content[0];
+                        client.SendRawMessage("PRIVMSG {0} :{1} last listened to {2} by {3}.", client.Channels[0].Name, split[1],lastTrack.Name, lastTrack.ArtistName);
+                    }
+                    catch(ArgumentOutOfRangeException iex)
+                    {
+                        client.SendRawMessage("PRIVMSG {0} :That user doesn't exist!", 
+                            client.Channels[0].Name);
+                    }
+                    catch(Exception ex)
+                    {
+                        client.SendRawMessage("PRIVMSG {0} :Uh-oh! Luigibot encountered an error. Email Luigifan @ miketheripper1@gmail.com",
+                            client.Channels[0].Name);
+
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine("UH OH BIG ERROR\nUH OH BIG ERROR");
+                        Console.ForegroundColor = ConsoleColor.White;
+                        Console.WriteLine(ex.Message + "\n");
+                    }
+                }
+            }
             if(command.StartsWith("!enable8ball") || command.StartsWith("!enableeightball"))
             {
                 if (sender.Nick.ToLower() == "luigifan2010"
@@ -266,11 +297,20 @@ namespace Luigibot2
             {
                 client.SendRawMessage("PRIVMSG {0} :The Answer to Life, the Universe, and Everything.", client.Channels[0].Name);
             }
+            if(command.StartsWith("!commands"))
+            {
+                client.SendRawMessage("PRIVMSG {0} :You can find a list of my commands here: https://github.com/Luigifan/Luigibot/wiki/Luigibot-Commands", client.Channels[0].Name);
+            }
             if(command.StartsWith("!seen"))
             {
                 string[] splitCommand = command.Split(new char[] { ' ' }, 2);
                 if (splitCommand.Length > 1)
                 {
+                    if(splitCommand[1].ToLower() == "knux" || splitCommand[1].ToLower() == "knuckles" || splitCommand[1].ToLower() == "knuckles96")
+                    {
+                        client.SendRawMessage("PRIVMSG {0} :Never.", client.Channels[0].Name);
+                        return;
+                    }
                     var UsersListCopy = UsersList;
                     var UserDatabaseCopy = UserDatabase;
                     //First, check to see if the user is on now
