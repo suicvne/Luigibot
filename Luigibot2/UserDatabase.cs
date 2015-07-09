@@ -7,7 +7,6 @@ namespace Luigibot2
 {
 	public class UserDatabase
 	{
-		List<IrcUserAndSeen> UserDatabase List<IrcUserAndSeen>();
 
 		public UserDatabase()
 		{
@@ -20,15 +19,7 @@ namespace Luigibot2
 
 		public void WriteDatabase(string path)
 		{
-			MemoryStream ms = new MemoryStream ();
-			JsonSerializer js = new JsonSerializer ();
-			BsonWriter bWriter = new BsonWriter (ms);
-
-			foreach (var user in UserDatabase) 
-			{
-				js.Serialize (bWriter, IrcUserAndSeen);
-			}
-
+			
 		}
 
 	}

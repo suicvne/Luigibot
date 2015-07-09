@@ -97,7 +97,7 @@ namespace Luigibot2
             Console.WriteLine("Connecting...");
             Console.ForegroundColor = ConsoleColor.White;
 
-            client = new IrcClient("irc.stardustfields.net", new IrcUser("LuigibotTest", "luigibot3"));
+            client = new IrcClient("irc.stardustfields.net", new IrcUser("Luigibot", "luigibot3"));
             client.ConnectionComplete += (s, e) => 
             {
                 Console.ForegroundColor = ConsoleColor.Green;
@@ -113,13 +113,15 @@ namespace Luigibot2
             };
             client.UserPartedChannel += (s, e) =>
                 {
-					foreach(IrcUser u in UserDatabase)
+                    DateTime now = DateTime.Now;
+					foreach(IrcUserAndSeen u in UserDatabase)
 					{
-						if(u == e)
+						if(u.User == e.User)
 							UserDatabase.Remove(u);
 					}
-                    DateTime now = DateTime.Now;
                     UserDatabase.Add(new IrcUserAndSeen(e.User, now));
+                    Console.Beep(4400, 1000);
+                    Console.WriteLine("Added new user to database {0} left at {1}", e.User.Nick, now.ToString());
                 };
             client.UserJoinedChannel += (s, e) =>
                 {
@@ -139,6 +141,41 @@ namespace Luigibot2
                     {
                         InterpretCommand(e.PrivateMessage.Message, e.PrivateMessage.User, client);
                     }
+                    else if(e.PrivateMessage.Message.Contains(""))
+                    {
+                        //DateTime now = DateTime.Now;
+                        //foreach (IrcUserAndSeen u in UserDatabase)
+                        //{
+                            //if (u.User == e.User)
+                            //    UserDatabase.Remove(u);
+                        //}
+                        //UserDatabase.Add(new IrcUserAndSeen(e.User, now));
+                        //SConsole.Beep(4400, 1000);
+                        //Console.WriteLine("Added new user to database {0} left at {1}", e.User.Nick, now.ToString());
+                    }
+                };
+            client.RawMessageRecieved += (s, e) =>
+                {
+                    //:Luigifan2010!~mike@107-145-175-125.res.bhn.net QUIT :Client Quit
+                    string rawMessage = e.Message.ToString();
+                    string[] split = rawMessage.Split(new char[] { ' ' }, 3);
+                    if(split.Length > 0)
+                    {
+                        if(split[1] == "QUIT")
+                        {
+                            string[] username = split[0].Split(new char[] { '!' }, 2);
+                            IrcUser ee = new IrcUser(username[0].ToString().Trim(':'), username[1].ToString().Trim('~'));
+                            DateTime now = DateTime.Now;
+                            foreach (IrcUserAndSeen u in UserDatabase)
+                            {
+                            if (u.User == ee)
+                                UserDatabase.Remove(u);
+                            }
+                            UserDatabase.Add(new IrcUserAndSeen(ee, now));
+                            Console.WriteLine("Added new user to database {0} left at {1} (Quit)", ee.Nick, now.ToString());
+                        }
+                    }
+
                 };
             client.ConnectAsync();
 
