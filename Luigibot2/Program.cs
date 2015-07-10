@@ -400,7 +400,7 @@ namespace Luigibot2
                     }
                     catch(ArgumentOutOfRangeException iex)
                     {
-                        client.SendRawMessage("PRIVMSG {0} :That user doesn't exist!", 
+                        client.SendRawMessage("PRIVMSG {0} :That user doesn't exist or hasn't scrobbled anything yet!", 
                             client.Channels[0].Name);
                     }
                     catch(Exception ex)
