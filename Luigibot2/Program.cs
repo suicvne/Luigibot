@@ -103,8 +103,8 @@ namespace Luigibot2
                         OutputHelpMessage("/exit - safely exists, saving databases/settings");
                         OutputHelpMessage("/disableslap - disables the slap command");
                         OutputHelpMessage("/enableslap - enables the slap command");
-                        OutputHelpMessage("/disable8ball||/disableeightball - disables the eight ball command");
-                        OutputHelpMessage("/enable8ball||/enableeightball - enables the eight ball command");
+                        OutputHelpMessage("/disable8ball,/disableeightball - disables the eight ball command");
+                        OutputHelpMessage("/enable8ball,/enableeightball - enables the eight ball command");
                         Console.ForegroundColor = ConsoleColor.Cyan;
                         Console.WriteLine("---End Commands List---");
                         Console.ForegroundColor = ConsoleColor.White;
@@ -433,7 +433,7 @@ namespace Luigibot2
                 {
                     if (sender.Nick.ToLower() == nick)
                     {
-                        slapEnabled = false;
+                        eightballEnabled = false;
 
                         Console.ForegroundColor = ConsoleColor.Yellow;
                         Console.WriteLine("Disabling eight ball");
