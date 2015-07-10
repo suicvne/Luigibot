@@ -20,6 +20,7 @@ namespace Luigibot2
         private static Random random = new Random(Environment.TickCount);
 
         private static bool eightballEnabled = true;
+        private static bool slapEnabled = true;
 
         [STAThread]
         public static void Main(string[] args)
@@ -41,7 +42,29 @@ namespace Luigibot2
                 string input = Console.ReadLine();
                 if(input.StartsWith("/"))
                 {
-                    if (input.StartsWith("/enable8ball") || input.StartsWith("/enableeightball"))
+                    if(input.StartsWith("/me"))
+                    {
+                        string[] split = input.Split(new char[] { ' ' }, 2);
+                        if (split.Length > 1)
+                            client.SendAction(split[1], client.Channels[0].Name);
+                        else
+                            Console.WriteLine("Nothing to action!");
+                    }
+                    else if(input.StartsWith("/disableslap"))
+                    {
+                        slapEnabled = false;
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                        Console.WriteLine("Disabling slap.");
+                        Console.ForegroundColor = ConsoleColor.White;
+                    }
+                    else if(input.StartsWith("/enableslap"))
+                    {
+                        slapEnabled = true;
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                        Console.WriteLine("Enabling slap");
+                        Console.ForegroundColor = ConsoleColor.White;
+                    }
+                    else if (input.StartsWith("/enable8ball") || input.StartsWith("/enableeightball"))
                     {
                         eightballEnabled = true;
                         Console.ForegroundColor = ConsoleColor.Yellow;
@@ -194,32 +217,63 @@ namespace Luigibot2
         {
             if(command.StartsWith("!slap"))
             {
-                string[] splitCommand = command.Split(new char[]{' '}, 2);
-                if (splitCommand.Length > 1)
+                if (slapEnabled)
                 {
-                    var listCopy = UsersList;
-                    bool foundUser = false;
-                    try
+                    string[] splitCommand = command.Split(new char[] { ' ' }, 2);
+                    if (splitCommand.Length > 1)
                     {
-                        foreach (IrcUserAndSeen user in listCopy)
+                        var listCopy = UsersList;
+                        bool foundUser = false;
+                        try
                         {
-                            if (user.User.Nick.ToLower() == splitCommand[1].ToLower().Trim())
+                            foreach (IrcUserAndSeen user in listCopy)
                             {
-                                if (user.User.Nick == client.User.Nick)
-                                    client.SendRawMessage("PRIVMSG {0} :What'd I do? :(", client.Channels[0].Name);
-                                else
-                                    client.SendRawMessage("PRIVMSG {0} :" + "\x01" + "ACTION slaps {1} with a giant fish.\x01", client.Channels[0].Name, user.User.Nick);
-                                foundUser = true;
-                                break;
+                                if (user.User.Nick.ToLower() == splitCommand[1].ToLower().Trim())
+                                {
+                                    if (user.User.Nick == client.User.Nick)
+                                        client.SendRawMessage("PRIVMSG {0} :What'd I do? :(", client.Channels[0].Name);
+                                    else
+                                        client.SendRawMessage("PRIVMSG {0} :" + "\x01" + "ACTION slaps {1} with a giant fish.\x01", client.Channels[0].Name, user.User.Nick);
+                                    foundUser = true;
+                                    break;
+                                }
                             }
+                            if (!foundUser)
+                                client.SendRawMessage("PRIVMSG {0} :User not found!");
                         }
-                        if (!foundUser)
-                            client.SendRawMessage("PRIVMSG {0} :User not found!");
+                        catch (Exception ex) { }
                     }
-                    catch (Exception ex) { }
+                    else
+                        client.SendRawMessage("PRIVMSG {0} :Slap who?", client.Channels[0].Name);
                 }
-                else
-                    client.SendRawMessage("PRIVMSG {0} :Slap who?", client.Channels[0].Name);
+            }
+            if(command.StartsWith("!enableslap"))
+            {
+                if (sender.Nick.ToLower() == "luigifan2010"
+                   || sender.Nick.ToLower() == "joey"
+                   || sender.Nick.ToLower() == "ghosthawk"
+                   || sender.Nick.ToLower() == "aeromatter")
+                {
+                    slapEnabled = true;
+
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    Console.WriteLine("Enabling slap");
+                    Console.ForegroundColor = ConsoleColor.White;
+                }
+            }
+            if(command.StartsWith("!disableslap"))
+            {
+                if (sender.Nick.ToLower() == "luigifan2010"
+                   || sender.Nick.ToLower() == "joey"
+                   || sender.Nick.ToLower() == "ghosthawk"
+                   || sender.Nick.ToLower() == "aeromatter")
+                {
+                    slapEnabled = false;
+
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    Console.WriteLine("Disabling slap");
+                    Console.ForegroundColor = ConsoleColor.White;
+                }
             }
             if(command.StartsWith("!eightball") || command.StartsWith("!8ball") || command.StartsWith("!fortune"))
             {
@@ -269,10 +323,12 @@ namespace Luigibot2
                     || sender.Nick.ToLower() == "joey"
                     || sender.Nick.ToLower() == "ghosthawk"
                     || sender.Nick.ToLower() == "aeromatter")
+                {
                     eightballEnabled = true;
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.WriteLine("Enabling Eight Ball");
-                Console.ForegroundColor = ConsoleColor.White;
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    Console.WriteLine("Enabling Eight Ball");
+                    Console.ForegroundColor = ConsoleColor.White;
+                }
             }
             if (command.StartsWith("!disable8ball") || command.StartsWith("!disableeightball"))
             {
@@ -280,10 +336,12 @@ namespace Luigibot2
                     || sender.Nick.ToLower() == "joey"
                     || sender.Nick.ToLower() == "ghosthawk"
                     || sender.Nick.ToLower() == "aeromatter")
+                {
                     eightballEnabled = false;
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.WriteLine("Disabling Eight Ball");
-                Console.ForegroundColor = ConsoleColor.White;
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    Console.WriteLine("Disabling Eight Ball");
+                    Console.ForegroundColor = ConsoleColor.White;
+                }
             }
             if(command.StartsWith("!selfdestruct"))
             {
