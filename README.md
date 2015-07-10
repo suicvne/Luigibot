@@ -1,5 +1,5 @@
 #Suggested Features
 
-- !calc - calculate things
+- ?calc - calculate things
 - !dice - dice things
 - !pm - private message things??????
