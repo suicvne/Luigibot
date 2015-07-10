@@ -53,7 +53,7 @@ namespace Luigibot2
             {
                 using(JsonWriter jsw = new JsonTextWriter(sw))
                 {
-                    js.Serialize(jsw, this);
+                    js.Serialize(jsw, this.settings);
                 }
             }
 

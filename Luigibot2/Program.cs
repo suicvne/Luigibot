@@ -18,9 +18,6 @@ namespace Luigibot2
         private static string[] EightballMessages = new string[] { "Signs point to yes.", "Yes.", "Reply hazy, try again.", "Without a doubt", "My sources say no", "As I see it, yes.", "You may rely on it.", "Concentrate and ask again", "Outlook not so good", "It is decidedly so", "Better not tell you now.", "Very doubtful", "Yes - definitely", "It is certain", "Cannot predict now", "Most likely", "Ask again later", "My reply is no", "Outlook good", "Don't count on it" };
         private static Random random = new Random(Environment.TickCount);
 
-        private static bool eightballEnabled = true;
-        private static bool slapEnabled = true;
-
         private static UserDatabase UsersSeenDatabase = new UserDatabase();
         private static Settings ProgramSettings = new Settings();
 
@@ -123,28 +120,28 @@ namespace Luigibot2
                     }
                     else if(input.StartsWith("/disableslap"))
                     {
-                        slapEnabled = false;
+                        ProgramSettings.settings.SlapEnabled = false;
                         Console.ForegroundColor = ConsoleColor.Yellow;
                         Console.WriteLine("Disabling slap.");
                         Console.ForegroundColor = ConsoleColor.White;
                     }
                     else if(input.StartsWith("/enableslap"))
                     {
-                        slapEnabled = true;
+                        ProgramSettings.settings.SlapEnabled = true;
                         Console.ForegroundColor = ConsoleColor.Yellow;
                         Console.WriteLine("Enabling slap");
                         Console.ForegroundColor = ConsoleColor.White;
                     }
                     else if (input.StartsWith("/enable8ball") || input.StartsWith("/enableeightball"))
                     {
-                        eightballEnabled = true;
+                        ProgramSettings.settings.EightballEnabled = true;
                         Console.ForegroundColor = ConsoleColor.Yellow;
                         Console.WriteLine("Enabling Eight Ball");
                         Console.ForegroundColor = ConsoleColor.White;
                     }
                     else if (input.StartsWith("/disable8ball") || input.StartsWith("disableeightball"))
                     {
-                        eightballEnabled = false;
+                        ProgramSettings.settings.EightballEnabled = false;
                         Console.ForegroundColor = ConsoleColor.Yellow;
                         Console.WriteLine("Disabling Eight Ball");
                         Console.ForegroundColor = ConsoleColor.White;
@@ -307,7 +304,7 @@ namespace Luigibot2
         {
             if(command.StartsWith("!slap"))
             {
-                if (slapEnabled)
+                if (ProgramSettings.settings.SlapEnabled)
                 {
                     string[] splitCommand = command.Split(new char[] { ' ' }, 2);
                     if (splitCommand.Length > 1)
@@ -343,7 +340,7 @@ namespace Luigibot2
                 {
                     if(sender.Nick.ToLower() == nick)
                     {
-                        slapEnabled = true;
+                        ProgramSettings.settings.SlapEnabled = true;
 
                         Console.ForegroundColor = ConsoleColor.Yellow;
                         Console.WriteLine("Enabling slap");
@@ -359,7 +356,7 @@ namespace Luigibot2
                 {
                     if (sender.Nick.ToLower() == nick)
                     {
-                        slapEnabled = false;
+                        ProgramSettings.settings.SlapEnabled = false;
 
                         Console.ForegroundColor = ConsoleColor.Yellow;
                         Console.WriteLine("Disabling slap");
@@ -371,7 +368,7 @@ namespace Luigibot2
             }
             if(command.StartsWith("!eightball") || command.StartsWith("!8ball") || command.StartsWith("!fortune"))
             {
-                if (eightballEnabled)
+                if (ProgramSettings.settings.EightballEnabled)
                 {
                     int ranMessage = random.Next(EightballMessages.Length - 1);
                     if (command.ToLower().Contains("waluigibot1337") || command.ToLower().Contains("waluigibot") || command.ToLower().Contains("waluigi bot"))
@@ -382,6 +379,13 @@ namespace Luigibot2
                         client.SendRawMessage("PRIVMSG {0} :{1}", client.Channels[0].Name, EightballMessages[ranMessage]);
                 }
             }
+			if(command.StartsWith("!status"))
+			{
+				client.SendRawMessage("PRIVMSG {0} :Slap Enabled: {1}. Eight Ball Enabled: {2}", 
+				client.Channels[0].Name,
+                ProgramSettings.settings.SlapEnabled,
+                ProgramSettings.settings.EightballEnabled);
+			}
             if(command.StartsWith("!lastfm"))
             {
                 string[] split = command.Split(new char[] { ' ' }, 2);
@@ -417,7 +421,7 @@ namespace Luigibot2
                 {
                     if (sender.Nick.ToLower() == nick)
                     {
-                        eightballEnabled = true;
+                        ProgramSettings.settings.EightballEnabled = true;
 
                         Console.ForegroundColor = ConsoleColor.Yellow;
                         Console.WriteLine("Enabling eight ball");
@@ -433,7 +437,7 @@ namespace Luigibot2
                 {
                     if (sender.Nick.ToLower() == nick)
                     {
-                        eightballEnabled = false;
+                        ProgramSettings.settings.EightballEnabled = false;
 
                         Console.ForegroundColor = ConsoleColor.Yellow;
                         Console.WriteLine("Disabling eight ball");
