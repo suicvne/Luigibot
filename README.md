@@ -1,3 +1,5 @@
 #Suggested Features
 
-- !seen - the last time a user was seen online
+- !calc - calculate things
+- !dice - dice things
+- !pm - private message things??????
