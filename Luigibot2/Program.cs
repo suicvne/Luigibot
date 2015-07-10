@@ -136,7 +136,7 @@ namespace Luigibot2
                 Console.ForegroundColor = ConsoleColor.White;
 
                 Console.ForegroundColor = ConsoleColor.Green;
-                client.JoinChannel("#smbx");
+                client.JoinChannel("#luigibot");
                 Console.WriteLine("Connected!");
                 Console.ForegroundColor = ConsoleColor.White;
 
@@ -228,7 +228,9 @@ namespace Luigibot2
         {
             client.Quit("Shutting down safely!");
             UsersSeenDatabase.WriteDatabase();
-            
+            ProgramSettings.WriteSettings();
+
+            Environment.Exit(0);
         }
 
         /// <summary>
@@ -273,30 +275,34 @@ namespace Luigibot2
             }
             if(command.StartsWith("!enableslap"))
             {
-                if (sender.Nick.ToLower() == "luigifan2010"
-                   || sender.Nick.ToLower() == "joey"
-                   || sender.Nick.ToLower() == "ghosthawk"
-                   || sender.Nick.ToLower() == "aeromatter")
+                foreach(var nick in ProgramSettings.settings.UsersAllowedToDisable)
                 {
-                    slapEnabled = true;
+                    if(sender.Nick.ToLower() == nick)
+                    {
+                        slapEnabled = true;
 
-                    Console.ForegroundColor = ConsoleColor.Yellow;
-                    Console.WriteLine("Enabling slap");
-                    Console.ForegroundColor = ConsoleColor.White;
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                        Console.WriteLine("Enabling slap");
+                        Console.ForegroundColor = ConsoleColor.White;
+
+                        break;
+                    }
                 }
             }
             if(command.StartsWith("!disableslap"))
             {
-                if (sender.Nick.ToLower() == "luigifan2010"
-                   || sender.Nick.ToLower() == "joey"
-                   || sender.Nick.ToLower() == "ghosthawk"
-                   || sender.Nick.ToLower() == "aeromatter")
+                foreach (var nick in ProgramSettings.settings.UsersAllowedToDisable)
                 {
-                    slapEnabled = false;
+                    if (sender.Nick.ToLower() == nick)
+                    {
+                        slapEnabled = false;
 
-                    Console.ForegroundColor = ConsoleColor.Yellow;
-                    Console.WriteLine("Disabling slap");
-                    Console.ForegroundColor = ConsoleColor.White;
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                        Console.WriteLine("Disabling slap");
+                        Console.ForegroundColor = ConsoleColor.White;
+
+                        break;
+                    }
                 }
             }
             if(command.StartsWith("!eightball") || command.StartsWith("!8ball") || command.StartsWith("!fortune"))
@@ -343,37 +349,46 @@ namespace Luigibot2
             }
             if(command.StartsWith("!enable8ball") || command.StartsWith("!enableeightball"))
             {
-                if (sender.Nick.ToLower() == "luigifan2010"
-                    || sender.Nick.ToLower() == "joey"
-                    || sender.Nick.ToLower() == "ghosthawk"
-                    || sender.Nick.ToLower() == "aeromatter")
+                foreach (var nick in ProgramSettings.settings.UsersAllowedToDisable)
                 {
-                    eightballEnabled = true;
-                    Console.ForegroundColor = ConsoleColor.Yellow;
-                    Console.WriteLine("Enabling Eight Ball");
-                    Console.ForegroundColor = ConsoleColor.White;
+                    if (sender.Nick.ToLower() == nick)
+                    {
+                        eightballEnabled = true;
+
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                        Console.WriteLine("Enabling eight ball");
+                        Console.ForegroundColor = ConsoleColor.White;
+
+                        break;
+                    }
                 }
             }
             if (command.StartsWith("!disable8ball") || command.StartsWith("!disableeightball"))
             {
-                if (sender.Nick.ToLower() == "luigifan2010"
-                    || sender.Nick.ToLower() == "joey"
-                    || sender.Nick.ToLower() == "ghosthawk"
-                    || sender.Nick.ToLower() == "aeromatter")
+                foreach (var nick in ProgramSettings.settings.UsersAllowedToDisable)
                 {
-                    eightballEnabled = false;
-                    Console.ForegroundColor = ConsoleColor.Yellow;
-                    Console.WriteLine("Disabling Eight Ball");
-                    Console.ForegroundColor = ConsoleColor.White;
+                    if (sender.Nick.ToLower() == nick)
+                    {
+                        slapEnabled = false;
+
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                        Console.WriteLine("Disabling eight ball");
+                        Console.ForegroundColor = ConsoleColor.White;
+
+                        break;
+                    }
                 }
             }
             if(command.StartsWith("!selfdestruct"))
             {
-                if (sender.Nick.ToLower() == "luigifan2010" 
-                    || sender.Nick.ToLower() == "joey" 
-                    || sender.Nick.ToLower() == "ghosthawk" 
-                    || sender.Nick.ToLower() == "aeromatter") //yes i know, this is super insecure but Luigibot isn't a security bot anyway he's a fun bot
-                    Environment.Exit(0);
+                foreach (var nick in ProgramSettings.settings.UsersAllowedToDisable)
+                {
+                    if (sender.Nick.ToLower() == nick)
+                    {
+                        ExitSafely();
+                        break;
+                    }
+                }
             }
             if(command.StartsWith("!42"))
             {

@@ -21,36 +21,35 @@ namespace Luigibot2
         /// <param name="path"></param>
 		public void LoadDatabase(IrcClient client)
 		{
-            JsonSerializer js = new JsonSerializer();
-
-            using(StreamReader sr = new StreamReader(Environment.CurrentDirectory + @"\seen_database.json"))
+            if (File.Exists(Environment.CurrentDirectory + @"\seen_database.json"))
             {
-                using(JsonReader jsr = new JsonTextReader(sr))
+                JsonSerializer js = new JsonSerializer();
+                js.Formatting = Formatting.Indented;
+
+                using (StreamReader sr = new StreamReader(Environment.CurrentDirectory + @"\seen_database.json"))
                 {
-                    IrcUserAndSeen des = new IrcUserAndSeen(new ChatSharp.IrcUser("test", "testt"), DateTime.Now); //filler
-                    while(des != null)
+                    using (JsonReader jsr = new JsonTextReader(sr))
                     {
-                        des = js.Deserialize<IrcUserAndSeen>(jsr);
-                        Console.WriteLine("Adding {0} to database, last seen at {1}", des.User.Nick, des.LastSeen.ToString());
-                        UsersSeenDatabase.Add(des);
-                        sr.ReadLine();
+                        List<IrcUserAndSeen> des;
+                        des = js.Deserialize<List<IrcUserAndSeen>>(jsr);
+                        UsersSeenDatabase = des;
                     }
                 }
             }
+            else
+                Console.WriteLine("No database");
 		}
 
 		public void WriteDatabase()
 		{
             JsonSerializer js = new JsonSerializer();
+            js.Formatting = Formatting.Indented;
 
 			using(StreamWriter sw = new StreamWriter(Environment.CurrentDirectory + @"\seen_database.json"))
             {
                 using(JsonWriter jsw = new JsonTextWriter(sw))
                 {
-                    foreach(IrcUserAndSeen u in UsersSeenDatabase)
-                    {
-                        js.Serialize(jsw, u);
-                    }
+                    js.Serialize(jsw, UsersSeenDatabase);
                 }
             }
 
