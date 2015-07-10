@@ -97,7 +97,7 @@
     <Compile Include="UserDatabase.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\ChatSharp\ChatSharp\ChatSharp.csproj">
+    <ProjectReference Include="..\ChatSharp\ChatSharp.csproj">
       <Project>{4033affa-bea3-4bdf-84ea-59a23360fd36}</Project>
       <Name>ChatSharp</Name>
     </ProjectReference>

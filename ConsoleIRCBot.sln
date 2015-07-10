@@ -7,9 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleIRCBot", "ConsoleIRC
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Luigibot2", "Luigibot2\Luigibot2.csproj", "{7A2CC946-F3E1-44CB-967F-DD68A03D6D2A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JsonTester", "JsonTester\JsonTester.csproj", "{55E8B9EB-7CFF-4D2C-B15B-C939B46E43E2}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatSharp", "..\ChatSharp\ChatSharp\ChatSharp.csproj", "{4033AFFA-BEA3-4BDF-84EA-59A23360FD36}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatSharp", "ChatSharp\ChatSharp.csproj", "{4033AFFA-BEA3-4BDF-84EA-59A23360FD36}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -25,10 +23,6 @@ Global
 		{7A2CC946-F3E1-44CB-967F-DD68A03D6D2A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7A2CC946-F3E1-44CB-967F-DD68A03D6D2A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7A2CC946-F3E1-44CB-967F-DD68A03D6D2A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{55E8B9EB-7CFF-4D2C-B15B-C939B46E43E2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{55E8B9EB-7CFF-4D2C-B15B-C939B46E43E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{55E8B9EB-7CFF-4D2C-B15B-C939B46E43E2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{55E8B9EB-7CFF-4D2C-B15B-C939B46E43E2}.Release|Any CPU.Build.0 = Release|Any CPU
 		{4033AFFA-BEA3-4BDF-84EA-59A23360FD36}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{4033AFFA-BEA3-4BDF-84EA-59A23360FD36}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4033AFFA-BEA3-4BDF-84EA-59A23360FD36}.Release|Any CPU.ActiveCfg = Release|Any CPU
