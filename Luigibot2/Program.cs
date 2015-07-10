@@ -396,7 +396,7 @@ namespace Luigibot2
                         var lastfmClient = new LastfmClient("4de0532fe30150ee7a553e160fbbe0e0", "0686c5e41f20d2dc80b64958f2df0f0c");
                         var response = lastfmClient.User.GetRecentScrobbles(split[1].ToString().Trim(), null, 0, 1);
                         LastTrack lastTrack = response.Result.Content[0];
-                        client.SendRawMessage("PRIVMSG {0} :{1} last listened to {2} by {3}.", client.Channels[0].Name, split[1],lastTrack.Name, lastTrack.ArtistName);
+                        client.SendRawMessage("PRIVMSG {0} :{1} last listened to {2} by {3}.", client.Channels[0].Name, split[1].Trim(), lastTrack.Name, lastTrack.ArtistName);
                     }
                     catch(ArgumentOutOfRangeException iex)
                     {
