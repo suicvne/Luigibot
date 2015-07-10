@@ -27,6 +27,23 @@ namespace Luigibot2
         [STAThread]
         public static void Main(string[] args)
         {
+            ProgramSettings.LoadSettings();
+
+            OutputStatusMessage(String.Format("Enter nick to use (enter for {0}): ", ProgramSettings.settings.LastUsedNick), ':', false);
+            string nick = Console.ReadLine();
+            if (nick.Trim() != "")
+                ProgramSettings.settings.LastUsedNick = nick;
+
+            OutputStatusMessage(String.Format("Enter server to join (enter for {0}): ", ProgramSettings.settings.LastJoinedServer), ':', false);
+            string server = Console.ReadLine();
+            if (server.Trim() != "")
+                ProgramSettings.settings.LastJoinedServer = server;
+
+            OutputStatusMessage(String.Format("Enter channel to join, starting with # (enter for {0}): ", ProgramSettings.settings.LastJoinedChannel), ':', false);
+            string channel = Console.ReadLine();
+            if (channel.Trim() != "")
+                ProgramSettings.settings.LastJoinedChannel = channel;
+
             InputThread.Start();
             RunConsoleOnly();
         }
@@ -34,6 +51,39 @@ namespace Luigibot2
         private static void RunConsoleOnly()
         {
             RunBotTest();
+        }
+
+        private static void OutputStatusMessage(string message, bool newLine)
+        {
+            string[] split = message.Split(new char[] { ' ' }, 2);
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.Write(split[0]);
+            Console.ForegroundColor = ConsoleColor.White;
+            if (newLine)
+                Console.Write(split[1] + "\n");
+            else
+                Console.Write(split[1]);
+        }
+        private static void OutputStatusMessage(string message, char splitAt, bool newLine)
+        {
+            string[] split = message.Split(new char[] {splitAt}, 2);
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.Write(split[0]);
+            Console.ForegroundColor = ConsoleColor.White;
+            if (newLine)
+                Console.Write(split[1] + "\n");
+            else
+                Console.Write(split[1]);
+        }
+
+
+        private static void OutputHelpMessage(string message)
+        {
+            string[] split = message.Split(new char[]{' '}, 2);
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.Write(split[0]);
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.Write(split[1] + "\n");
         }
 
         private static void Input()
@@ -44,6 +94,21 @@ namespace Luigibot2
                 string input = Console.ReadLine();
                 if(input.StartsWith("/"))
                 {
+                    if(input.StartsWith("/help"))
+                    { 
+                        Console.ForegroundColor = ConsoleColor.Cyan;
+                        Console.WriteLine("Commands list");
+                        Console.ForegroundColor = ConsoleColor.White;
+                        OutputHelpMessage("/me - sends an ACTION under the current bot's user.");
+                        OutputHelpMessage("/exit - safely exists, saving databases/settings");
+                        OutputHelpMessage("/disableslap - disables the slap command");
+                        OutputHelpMessage("/enableslap - enables the slap command");
+                        OutputHelpMessage("/disable8ball||/disableeightball - disables the eight ball command");
+                        OutputHelpMessage("/enable8ball||/enableeightball - enables the eight ball command");
+                        Console.ForegroundColor = ConsoleColor.Cyan;
+                        Console.WriteLine("---End Commands List---");
+                        Console.ForegroundColor = ConsoleColor.White;
+                    }
                     if(input.StartsWith("/me"))
                     {
                         string[] split = input.Split(new char[] { ' ' }, 2);
@@ -128,22 +193,21 @@ namespace Luigibot2
             Console.WriteLine("Connecting...");
             Console.ForegroundColor = ConsoleColor.White;
 
-            client = new IrcClient("irc.stardustfields.net", new IrcUser("Luigibot", "luigibot3"));
+            client = new IrcClient(ProgramSettings.settings.LastJoinedServer, new IrcUser(ProgramSettings.settings.LastUsedNick, "luigibot-oss"));
             client.ConnectionComplete += (s, e) => 
             {
                 Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine("Connected! Joining #smbx..");
+                Console.WriteLine("Connected! Joining {0}..", ProgramSettings.settings.LastJoinedChannel);
                 Console.ForegroundColor = ConsoleColor.White;
 
                 Console.ForegroundColor = ConsoleColor.Green;
-                client.JoinChannel("#luigibot");
+                client.JoinChannel(ProgramSettings.settings.LastJoinedChannel);
                 Console.WriteLine("Connected!");
                 Console.ForegroundColor = ConsoleColor.White;
 
                 Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine("Loading settings and database..");
+                Console.WriteLine("Loading database..");
                 Console.ForegroundColor = ConsoleColor.White;
-                ProgramSettings.LoadSettings();
                 UsersSeenDatabase.LoadDatabase(client);
 
                 Console.ForegroundColor = ConsoleColor.Green;

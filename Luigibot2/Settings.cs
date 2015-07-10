@@ -38,6 +38,9 @@ namespace Luigibot2
                 settings.EightballEnabled = true;
                 settings.SlapEnabled = true;
                 settings.UsersAllowedToDisable = new string[] { "luigifan2010", "ghosthawk", "aeromatter", "joey" };
+                settings.LastJoinedChannel = "#smbx";
+                settings.LastJoinedServer = "irc.stardustfields.net";
+                settings.LastUsedNick = "Luigibot";
             }
         }
 
