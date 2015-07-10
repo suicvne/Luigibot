@@ -12,7 +12,6 @@ namespace Luigibot2
     static class Program
     {
         private static List<IrcUserAndSeen> UsersList = new List<IrcUserAndSeen>();
-        private static List<IrcUserAndSeen> UserDatabase = new List<IrcUserAndSeen>();
         private static Thread updateUsersListThread = new Thread(UpdateUsersList);
         private static Thread InputThread = new Thread(Input);
         private static IrcClient client;
@@ -21,6 +20,9 @@ namespace Luigibot2
 
         private static bool eightballEnabled = true;
         private static bool slapEnabled = true;
+
+        private static UserDatabase UsersSeenDatabase = new UserDatabase();
+        private static Settings ProgramSettings = new Settings();
 
         [STAThread]
         public static void Main(string[] args)
@@ -49,6 +51,10 @@ namespace Luigibot2
                             client.SendAction(split[1], client.Channels[0].Name);
                         else
                             Console.WriteLine("Nothing to action!");
+                    }
+                    else if(input.StartsWith("/exit"))
+                    {
+                        ExitSafely();
                     }
                     else if(input.StartsWith("/disableslap"))
                     {
@@ -134,17 +140,28 @@ namespace Luigibot2
                 Console.WriteLine("Connected!");
                 Console.ForegroundColor = ConsoleColor.White;
 
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine("Loading settings and database..");
+                Console.ForegroundColor = ConsoleColor.White;
+                ProgramSettings.LoadSettings();
+                UsersSeenDatabase.LoadDatabase(client);
+
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine("Success!");
+                Console.ForegroundColor = ConsoleColor.White;
+
                 updateUsersListThread.Start();
             };
             client.UserPartedChannel += (s, e) =>
                 {
                     DateTime now = DateTime.Now;
-					foreach(IrcUserAndSeen u in UserDatabase)
-					{
-						if(u.User == e.User)
-							UserDatabase.Remove(u);
-					}
-                    UserDatabase.Add(new IrcUserAndSeen(e.User, now));
+                    foreach(IrcUserAndSeen u in UsersSeenDatabase.UsersSeenDatabase)
+                    {
+                        if (u.User == e.User)
+                            UsersSeenDatabase.UsersSeenDatabase.Remove(u);
+                    }
+                    UsersSeenDatabase.UsersSeenDatabase.Add(new IrcUserAndSeen(e.User, now));
+
                     //Console.Beep(4400, 1000);
                     Console.WriteLine("Added new user to database {0} left at {1}", e.User.Nick, now.ToString());
                 };
@@ -191,12 +208,12 @@ namespace Luigibot2
                             string[] username = split[0].Split(new char[] { '!' }, 2);
                             IrcUser ee = new IrcUser(username[0].ToString().Trim(':'), username[1].ToString().Trim('~'));
                             DateTime now = DateTime.Now;
-                            foreach (IrcUserAndSeen u in UserDatabase)
+                            foreach (IrcUserAndSeen u in UsersSeenDatabase.UsersSeenDatabase)
                             {
                             if (u.User == ee)
-                                UserDatabase.Remove(u);
+                                UsersSeenDatabase.UsersSeenDatabase.Remove(u);
                             }
-                            UserDatabase.Add(new IrcUserAndSeen(ee, now));
+                            UsersSeenDatabase.UsersSeenDatabase.Add(new IrcUserAndSeen(ee, now));
                             Console.WriteLine("Added new user to database {0} left at {1} (Quit)", ee.Nick, now.ToString());
                         }
                     }
@@ -205,6 +222,13 @@ namespace Luigibot2
             client.ConnectAsync();
 
             while (true) ; //just keeps everything going
+        }
+
+        private static void ExitSafely()
+        {
+            client.Quit("Shutting down safely!");
+            UsersSeenDatabase.WriteDatabase();
+            
         }
 
         /// <summary>
@@ -370,7 +394,7 @@ namespace Luigibot2
                         return;
                     }
                     var UsersListCopy = UsersList;
-                    var UserDatabaseCopy = UserDatabase;
+                    var UserDatabaseCopy = UsersSeenDatabase.UsersSeenDatabase;
                     //First, check to see if the user is on now
                     bool foundInOnline = false;
                     foreach(IrcUserAndSeen user in UsersListCopy)
