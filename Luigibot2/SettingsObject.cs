@@ -10,6 +10,7 @@ namespace Luigibot2
     {
         public bool EightballEnabled { get; set; }
         public bool SlapEnabled { get; set; }
+        public bool WelcomeUserEnabled { get; set; }
         public string LastUsedNick { get; set; }
         public string LastJoinedServer { get; set; }
         public string LastJoinedChannel { get; set; }
@@ -19,6 +20,7 @@ namespace Luigibot2
         {
             EightballEnabled = true;
             SlapEnabled = true;
+            WelcomeUserEnabled = true;
             UsersAllowedToDisable = new string[] { "luigifan2010", "ghosthawk", "aeromatter", "joey" };
             LastUsedNick = "Luigibot";
             LastJoinedServer = "irc.stardustfields.net";

@@ -102,6 +102,8 @@ namespace Luigibot2
                         OutputHelpMessage("/enableslap - enables the slap command");
                         OutputHelpMessage("/disable8ball,/disableeightball - disables the eight ball command");
                         OutputHelpMessage("/enable8ball,/enableeightball - enables the eight ball command");
+                        OutputHelpMessage("/disablewelcome - disables the welcome message on user entry.");
+                        OutputHelpMessage("/enablewelcome - enables the welcome message on user entry.");
                         Console.ForegroundColor = ConsoleColor.Cyan;
                         Console.WriteLine("---End Commands List---");
                         Console.ForegroundColor = ConsoleColor.White;
@@ -117,6 +119,20 @@ namespace Luigibot2
                     else if(input.StartsWith("/exit"))
                     {
                         ExitSafely();
+                    }
+                    else if(input.StartsWith("/enablewelcome"))
+                    {
+                        ProgramSettings.settings.WelcomeUserEnabled = true;
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                        Console.WriteLine("Disabling slap.");
+                        Console.ForegroundColor = ConsoleColor.White;
+                    }
+                    else if(input.StartsWith("/disablewelcome"))
+                    {
+                        ProgramSettings.settings.WelcomeUserEnabled = false;
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                        Console.WriteLine("Disabling welcome.");
+                        Console.ForegroundColor = ConsoleColor.White;
                     }
                     else if(input.StartsWith("/disableslap"))
                     {
@@ -228,8 +244,17 @@ namespace Luigibot2
                 };
             client.UserJoinedChannel += (s, e) =>
                 {
-                    if(e.User.Nick != client.User.Nick)
-                        client.SendAction("welcomes " + e.User.Nick + "!", client.Channels[0].Name);
+                    if (e.User.Nick.ToLower() == "luigifan2010")
+                    {
+                            client.SendAction("welcomes daddy!", client.Channels[0].Name);
+                            return;
+                    } 
+                    if (ProgramSettings.settings.WelcomeUserEnabled)
+                    {
+                        
+                        if (e.User.Nick != client.User.Nick)
+                            client.SendAction("welcomes " + e.User.Nick + "!", client.Channels[0].Name);
+                    }
                 };
             client.NoticeRecieved += (s, e) =>
             {
@@ -350,6 +375,38 @@ namespace Luigibot2
                     }
                 }
             }
+            if(command.StartsWith("!enablewelcome"))
+            {
+                foreach (var nick in ProgramSettings.settings.UsersAllowedToDisable)
+                {
+                    if (sender.Nick.ToLower() == nick)
+                    {
+                        ProgramSettings.settings.WelcomeUserEnabled = true;
+
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                        Console.WriteLine("Enabling welcome messages");
+                        Console.ForegroundColor = ConsoleColor.White;
+
+                        break;
+                    }
+                }
+            }
+            if(command.StartsWith("!disablewelcome"))
+            {
+                foreach (var nick in ProgramSettings.settings.UsersAllowedToDisable)
+                {
+                    if (sender.Nick.ToLower() == nick)
+                    {
+                        ProgramSettings.settings.WelcomeUserEnabled = false;
+
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                        Console.WriteLine("Disabling welcome messages");
+                        Console.ForegroundColor = ConsoleColor.White;
+
+                        break;
+                    }
+                }
+            }
             if(command.StartsWith("!disableslap"))
             {
                 foreach (var nick in ProgramSettings.settings.UsersAllowedToDisable)
@@ -381,10 +438,11 @@ namespace Luigibot2
             }
 			if(command.StartsWith("!status"))
 			{
-				client.SendRawMessage("PRIVMSG {0} :Slap Enabled: {1}. Eight Ball Enabled: {2}", 
-				client.Channels[0].Name,
-                ProgramSettings.settings.SlapEnabled,
-                ProgramSettings.settings.EightballEnabled);
+				client.SendRawMessage("PRIVMSG {0} :Slap Enabled: {1}. Eight Ball Enabled: {2}. Welcome Enabled: {3}", 
+				    client.Channels[0].Name,
+                    ProgramSettings.settings.SlapEnabled,
+                    ProgramSettings.settings.EightballEnabled,
+                    ProgramSettings.settings.WelcomeUserEnabled);
 			}
             if(command.StartsWith("!lastfm"))
             {
