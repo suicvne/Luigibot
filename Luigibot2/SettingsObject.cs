@@ -14,6 +14,7 @@ namespace Luigibot2
         public string LastUsedNick { get; set; }
         public string LastJoinedServer { get; set; }
         public string LastJoinedChannel { get; set; }
+		public string WelcomeMessage { get; set; }
         public string[] UsersAllowedToDisable { get; set; }
 
         public SettingsObject()
@@ -25,6 +26,7 @@ namespace Luigibot2
             LastUsedNick = "Luigibot";
             LastJoinedServer = "irc.stardustfields.net";
             LastJoinedChannel = "#smbx";
+			WelcomeMessage = "/me welcomes {0}";
         }
     }
 }
