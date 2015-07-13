@@ -383,11 +383,25 @@ namespace Luigibot2
 					{
 						if (sender.Nick.ToLower () == nick)
 						{
-							ProgramSettings.Settings.WelcomeMessage = splitCommand [1];
-							client.SendRawMessage ("PRIVMSG {0} :Welcome message set!", client.Channels[0].Name);
-							Console.ForegroundColor = ConsoleColor.Yellow;
-							Console.WriteLine ("New welcome message set: " + splitCommand[1]);
-							Console.BackgroundColor = ConsoleColor.White;
+							if (splitCommand [1] == "test")
+							{
+								if (ProgramSettings.settings.WelcomeMessage.Contains ("/me"))
+								{
+									client.SendAction (String.Format (ProgramSettings.settings.WelcomeMessage.Substring (2), e.User.Nick), client.Channels [0].Name);
+								} else
+								{
+									client.SendRawMessage ("PRIVMSG {0} :{1}", 
+										client.Channels [0].Name, 
+										String.Format (ProgramSettings.settings.WelcomeMessage, e.User.Nick));
+								}
+							} else
+							{
+								ProgramSettings.Settings.WelcomeMessage = splitCommand [1];
+								client.SendRawMessage ("PRIVMSG {0} :Welcome message set!", client.Channels [0].Name);
+								Console.ForegroundColor = ConsoleColor.Yellow;
+								Console.WriteLine ("New welcome message set: " + splitCommand [1]);
+								Console.BackgroundColor = ConsoleColor.White;
+							}
 						}
 					}
 				}
