@@ -267,7 +267,8 @@ namespace Luigibot2
 				{
 					if(ProgramSettings.settings.WelcomeMessage.Contains("/me"))
 					{
-						client.SendAction(String.Format(ProgramSettings.settings.WelcomeMessage.Substring(2), e.User.Nick), client.Channels[0].Name);
+						//set substring 4 to account for "/me" and the space after
+						client.SendAction(String.Format(ProgramSettings.settings.WelcomeMessage.Substring(4), e.User.Nick), client.Channels[0].Name);
 					}
 					else
 					{
@@ -387,7 +388,7 @@ namespace Luigibot2
 							{
 								if (ProgramSettings.settings.WelcomeMessage.Contains ("/me"))
 								{
-									client.SendAction (String.Format (ProgramSettings.settings.WelcomeMessage.Substring (2), sender), client.Channels [0].Name);
+									client.SendAction (String.Format (ProgramSettings.settings.WelcomeMessage.Substring (4), sender), client.Channels [0].Name);
 								} else
 								{
 									client.SendRawMessage ("PRIVMSG {0} :{1}", 
