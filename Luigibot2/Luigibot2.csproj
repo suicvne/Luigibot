@@ -34,6 +34,9 @@
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>Luigibot32.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="IF.Lastfm.Core">
       <HintPath>..\packages\Inflatable.Lastfm.0.2.0.211\lib\portable-win8+net45+wp8+wpa81\IF.Lastfm.Core.dll</HintPath>
@@ -101,6 +104,9 @@
       <Project>{4033AFFA-BEA3-4BDF-84EA-59A23360FD36}</Project>
       <Name>ChatSharp</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Luigibot32.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets" Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets')" />

@@ -522,9 +522,8 @@ namespace Luigibot2
 							}
 							if (!foundUser)
 								client.SendRawMessage ("PRIVMSG {0} :User not found!");
-						} catch (Exception ex)
-						{
-						}
+						} 
+                        catch{}
 					} else
 						client.SendRawMessage ("PRIVMSG {0} :Slap who?", client.Channels [0].Name);
 				}
@@ -754,11 +753,12 @@ namespace Luigibot2
 			}
 			if (command.StartsWith ("status"))
 			{
-				client.SendRawMessage ("PRIVMSG {0} :Slap Enabled: {1}. Eight Ball Enabled: {2}. Welcome Enabled: {3}", 
+				client.SendRawMessage ("PRIVMSG {0} :Slap Enabled: {1}. Eight Ball Enabled: {2}. Welcome Enabled: {3}. Command Prefix: {4}", 
 					client.Channels [0].Name,
 					ProgramSettings.settings.SlapEnabled,
 					ProgramSettings.settings.EightballEnabled,
-					ProgramSettings.settings.WelcomeUserEnabled);
+					ProgramSettings.settings.WelcomeUserEnabled,
+                    ProgramSettings.settings.CommandPrefix.ToString());
 			}
 			if (command.StartsWith ("lastfm"))
 			{
@@ -772,11 +772,13 @@ namespace Luigibot2
 						var response = lastfmClient.User.GetRecentScrobbles (split [1].ToString ().Trim (), null, 0, 1);
 						LastTrack lastTrack = response.Result.Content [0];
 						client.SendRawMessage ("PRIVMSG {0} :{1} last listened to {2} by {3}.", client.Channels [0].Name, split [1].Trim (), lastTrack.Name, lastTrack.ArtistName);
-					} catch (ArgumentOutOfRangeException iex)
+					} 
+                    catch (ArgumentOutOfRangeException iex)
 					{
 						client.SendRawMessage ("PRIVMSG {0} :That user doesn't exist or hasn't scrobbled anything yet!", 
 							client.Channels [0].Name);
-					} catch (Exception ex)
+					} 
+                    catch (Exception ex)
 					{
 						client.SendRawMessage ("PRIVMSG {0} :Uh-oh! Luigibot encountered an error. Email Luigifan @ miketheripper1@gmail.com",
 							client.Channels [0].Name);
@@ -872,13 +874,20 @@ namespace Luigibot2
 					{
 						foreach (IrcUserAndSeen user in UserDatabaseCopy)
 						{
-							if (user.User.Nick.ToLower () == splitCommand [1].ToLower ().Trim ())
-							{
-								foundInDatabase = true;
-								client.SendRawMessage ("PRIVMSG {0} :{1} was last seen at {2} (EST)", client.Channels [0].Name, user.User.Nick, user.LastSeen.ToString ());
-								break;
-							}
-						}
+                            if (user.User.Nick == null)
+                            {
+                                UsersSeenDatabase.UsersSeenDatabase.Remove(user);
+                            }
+                            else
+                            {
+                                if (user.User.Nick.ToLower() == splitCommand[1].ToLower().Trim())
+                                {
+                                    foundInDatabase = true;
+                                    client.SendRawMessage("PRIVMSG {0} :{1} was last seen at {2} (EST)", client.Channels[0].Name, user.User.Nick, user.LastSeen.ToString());
+                                    break;
+                                }
+                            }
+                        }
 						if (!foundInDatabase && !foundInOnline)
 							client.SendRawMessage ("PRIVMSG {0} :I'm not sure :(", client.Channels [0].Name);
 					}
