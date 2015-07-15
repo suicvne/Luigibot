@@ -93,6 +93,7 @@
     </Compile>
     <Compile Include="Settings.cs" />
     <Compile Include="SettingsObject.cs" />
+    <Compile Include="SimpleAES.cs" />
     <Compile Include="UserDatabase.cs" />
   </ItemGroup>
   <ItemGroup>

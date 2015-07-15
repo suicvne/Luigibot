@@ -345,11 +345,6 @@ namespace ChatSharp
         {
             if (UserPartedChannel != null) UserPartedChannel(this, e);
         }
-        public event EventHandler<ChannelUserEventArgs> UserQuitChannel;
-        protected internal virtual void OnUserQuitChannel(ChannelUserEventArgs e)
-        {
-            if (UserQuitChannel != null) UserQuitChannel(this, e);
-        }
         public event EventHandler<ChannelEventArgs> ChannelListRecieved;
         protected internal virtual void OnChannelListRecieved(ChannelEventArgs e)
         {
