@@ -5,7 +5,7 @@ namespace ChatSharp
 {
     public class IrcUser : IEquatable<IrcUser>
     {
-        internal IrcUser()
+        public IrcUser()
         {
         }
 
@@ -47,12 +47,12 @@ namespace ChatSharp
             RealName = realName;
         }
 
-        public string Nick { get; internal set; }
-        public string User { get; internal set; }
-        public string Password { get; internal set; }
-        public string Mode { get; internal set; }
-        public string RealName { get; internal set; }
-        public string Hostname { get; internal set; }
+        public string Nick { get; set; }
+        public string User { get; set; }
+        public string Password { get; set; }
+        public string Mode { get; set; }
+        public string RealName { get; set; }
+        public string Hostname { get; set; }
 
         public string Hostmask
         {

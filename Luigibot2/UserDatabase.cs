@@ -40,6 +40,12 @@ namespace Luigibot2
                 Console.WriteLine("No database");
 		}
 
+        public void RemoveBrokenEntries()
+        {
+            IrcUserAndSeen nullUser = new IrcUserAndSeen();
+            UsersSeenDatabase.RemoveAll(i=>i==nullUser);
+        }
+
 		public void WriteDatabase()
 		{
             JsonSerializer js = new JsonSerializer();

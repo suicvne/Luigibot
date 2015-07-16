@@ -312,10 +312,12 @@ namespace Luigibot2
 						IrcChannel channel = client.Channels [0];
 						foreach (var user in channel.Users)
 						{
-							UsersList.Add (new IrcUserAndSeen ((IrcUser)user));
+							UsersList
+                                .Add (new IrcUserAndSeen ((IrcUser)user));
 						}
 					}
 				}
+                UsersSeenDatabase.RemoveBrokenEntries();
 				Thread.Sleep (3 * 1000); //every 3 seconds, update the users list
 			}
 		}
@@ -407,7 +409,7 @@ namespace Luigibot2
 			{
                 if (checkForNextHighfive)
                 {
-                    if (e.PrivateMessage.Message == "\\o")
+                    if (e.PrivateMessage.Message.Trim() == "\\o")
                     {
                         if(e.PrivateMessage.User.Nick != firstuser)
                             client.SendRawMessage("PRIVMSG {0} :{1} o/ *HIGHFIVED* \\o {2}!", client.Channels[0].Name, firstuser, e.PrivateMessage.User.Nick);
@@ -430,7 +432,7 @@ namespace Luigibot2
                             client.Channels[0].Name, ProgramSettings.settings.CommandPrefix);
                     }
                 }
-                else if (e.PrivateMessage.Message == "o/")
+                else if (e.PrivateMessage.Message.Trim() == "o/")
                 {
                     checkForNextHighfive = true;
                     firstuser = e.PrivateMessage.User.Nick;
@@ -870,13 +872,15 @@ namespace Luigibot2
 					}
 					//Then, we'll check the database
 					bool foundInDatabase = false;
+                    List<IrcUserAndSeen> removeLater = new List<IrcUserAndSeen>();
 					if (!foundInOnline)
 					{
 						foreach (IrcUserAndSeen user in UserDatabaseCopy)
 						{
                             if (user.User.Nick == null)
                             {
-                                UsersSeenDatabase.UsersSeenDatabase.Remove(user);
+                                Console.WriteLine("Adding null entry to be removed later");
+                                removeLater.Add(user);
                             }
                             else
                             {

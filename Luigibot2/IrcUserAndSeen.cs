@@ -25,7 +25,8 @@ namespace Luigibot2
 
         public IrcUserAndSeen()
         {
-
+            User = new IrcUser();
+            LastSeen = DateTime.Now;
         }
     }
 }
