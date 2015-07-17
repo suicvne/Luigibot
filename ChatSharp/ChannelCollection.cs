@@ -28,6 +28,11 @@ namespace ChatSharp
             Channels.Remove(channel);
         }
 
+		public int Count()
+		{
+			return Channels.Count;
+		}
+
         public void Join(string name)
         {
             Client.JoinChannel(name);
