@@ -4,6 +4,9 @@ using System.Threading;
 using ChatSharp;
 using Luigibot2;
 using System.Reflection;
+using System.Windows.Forms;
+using System.Net;
+using System.Text.RegularExpressions;
 
 #if __MONOCS__
 #else
@@ -52,10 +55,29 @@ namespace LuigibotMono
 		[STAThread]
 		public static void Main (string[] args)
 		{
-
 			Console.Title = "Luigibot - " + ProgramVersion.ToString();
 
 			ProgramSettings.LoadSettings ();
+
+			#if __MONOCS__
+			Console.ForegroundColor = ConsoleColor.Yellow;
+			Console.WriteLine("WARNING");
+			Console.ForegroundColor = ConsoleColor.White;
+
+			Console.WriteLine("You are running the Mono version of Luigibot." +
+				"\nSome features will not be available such as:" +
+				"\n  -Lastfm" +
+				"\nPlease bear with us as we try to reach out to the Inflatable.Lastfm developers for help in solving this." +
+				"\nThanks, Luigifan");
+
+			Console.ForegroundColor = ConsoleColor.Yellow;
+			Console.WriteLine("WARNING");
+			Console.ForegroundColor = ConsoleColor.White;
+
+			Console.Write("Press enter to continue...");
+			Console.ReadLine();
+			Console.WriteLine("\n");
+			#endif
 
 			OutputStatusMessage (String.Format ("Enter nick to use (enter for {0}): ", ProgramSettings.settings.LastUsedNick), ':', false);
 			string nick = Console.ReadLine ();
@@ -357,7 +379,7 @@ namespace LuigibotMono
 					client.SendRawMessage("PRIVMSG NickServ :IDENTIFY {0}", encrypter.DecryptString(ProgramSettings.settings.NickServPass));
 				}
 				else
-					Console.WriteLine("No NickServ password set! Set using /setnickservpass");
+					Console.WriteLine("No NickServ password set! Set using /setnickservpass`");
 
 				Console.ForegroundColor = ConsoleColor.Green;
 				Console.WriteLine ("Loading database..");
@@ -433,6 +455,10 @@ namespace LuigibotMono
 				{
 					InterpretCommand(e.PrivateMessage.Message, e.PrivateMessage.User, client);
 				}
+				else if(e.PrivateMessage.Message.Contains("http://") || e.PrivateMessage.Message.Contains("https://"))
+				{
+					UrlSubmitted(e.PrivateMessage.Message);
+				}
 				else if (e.PrivateMessage.Message.StartsWith(client.User.Nick))
 				{
 					if (e.PrivateMessage.Message.Contains("help"))
@@ -498,6 +524,45 @@ namespace LuigibotMono
 			Environment.Exit (0);
 		}
 
+		private static void UrlSubmitted(string message)
+		{
+			string url;
+			if(message.Contains("http://"))
+				url = message.Substring(message.LastIndexOf("http://")).Trim();
+			else
+				url = message.Substring(message.LastIndexOf("https://")).Trim();
+
+			//shoutout to Blank for this :D
+			//thank god because i'm terrible with regular expressions
+			WebClient wc = new WebClient();
+			try
+			{
+				if(url.Contains("pornhub"))
+				{
+						return;
+				}
+				string source = wc.DownloadString(url);
+				string title = Regex.Match(source, @"\<title\b[^>]*\>\s*(?<Title>[\s\S]*?)\</title\>", RegexOptions.IgnoreCase).Groups["Title"].Value;
+
+				client.SendRawMessage("PRIVMSG {0} :{1} - {2}", client.Channels[0].Name, title, url.Substring(url.LastIndexOf("/")).Trim('/'));
+			}
+			catch(Exception ex) 
+			{
+				client.SendRawMessage ("PRIVMSG {0} :Couldn't Load this webpage!");
+
+				Console.ForegroundColor = ConsoleColor.Red;
+				Console.WriteLine ("Exception occurred!");
+				Console.ForegroundColor = ConsoleColor.White;
+
+				Console.WriteLine (ex.Message);
+
+				Console.ForegroundColor = ConsoleColor.Red;
+				Console.WriteLine ("Exception occurred!");
+				Console.ForegroundColor = ConsoleColor.White;
+			}
+
+		}
+
 		/// <summary>
 		/// Interprets commands
 		/// </summary>
@@ -545,7 +610,11 @@ namespace LuigibotMono
 			}
 			if(command.StartsWith("version"))
 			{
+				#if __MONOCS__
+				client.SendRawMessage("PRIVMSG {0} :Luigibot v{1} - http://www.github.com/Luigifan/Luigibot - Running under Mono", client.Channels[0].Name, ProgramVersion.ToString());
+				#else
 				client.SendRawMessage("PRIVMSG {0} :Luigibot v{1} - http://www.github.com/Luigifan/Luigibot", client.Channels[0].Name, ProgramVersion.ToString());
+				#endif
 			}
 			if(command.StartsWith("changeprefix"))
 			{

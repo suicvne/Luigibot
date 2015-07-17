@@ -10,6 +10,7 @@
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <StartupObject>LuigibotMono.Program</StartupObject>
     <UseMSBuildEngine>False</UseMSBuildEngine>
+    <ReleaseVersion>1.1.1.0</ReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <DebugSymbols>true</DebugSymbols>
@@ -48,6 +49,7 @@
       <HintPath>..\packages\Inflatable.Lastfm.0.2.0.211\lib\portable-win8+net45+wp8+wpa81\IF.Lastfm.Core.dll</HintPath>
     </Reference>
     <Reference Include="System.Data" />
+    <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Program.cs" />
