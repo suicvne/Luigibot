@@ -66,7 +66,7 @@
     <None Include="Luigibot32.ico" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\git\Luigibot\ChatSharp\ChatSharp.csproj">
+    <ProjectReference Include="..\ChatSharp\ChatSharp.csproj">
       <Project>{4033AFFA-BEA3-4BDF-84EA-59A23360FD36}</Project>
       <Name>ChatSharp</Name>
     </ProjectReference>
