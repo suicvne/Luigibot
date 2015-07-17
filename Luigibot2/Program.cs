@@ -530,6 +530,10 @@ namespace Luigibot2
 						client.SendRawMessage ("PRIVMSG {0} :Slap who?", client.Channels [0].Name);
 				}
 			}
+            if(command.StartsWith("motto") || command.StartsWith("slogan"))
+            {
+                client.SendRawMessage("PRIVMSG {0} :Luigibot does what Reta don't \u00a9", client.Channels[0].Name);
+            }
             if(command.StartsWith("version"))
             {
                 client.SendRawMessage("PRIVMSG {0} :Luigibot v{1} - http://www.github.com/Luigifan/Luigibot", client.Channels[0].Name, ProgramVersion.ToString());
