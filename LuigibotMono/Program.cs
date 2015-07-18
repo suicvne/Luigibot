@@ -98,11 +98,6 @@ namespace LuigibotMono
 			RunConsoleOnly ();
 		}
 
-		private static void CheckForMono()
-		{
-			
-		}
-
 		private static void RunConsoleOnly ()
 		{
 			RunBotTest ();
@@ -168,49 +163,51 @@ namespace LuigibotMono
 						OutputHelpMessage("/identify - identifies with NickServ, usually does this automagically");
 						OutputHelpMessage("/register - registers the bot's current nick with NickServ");
 						OutputHelpMessage("/changeprefix - changes the command prefix for the people down there in the IRC chat."); 
+						OutputHelpMessage ("/nick - changes the nick for the bot");
 						Console.ForegroundColor = ConsoleColor.Cyan;
 						Console.WriteLine ("---End Commands List---");
 						Console.ForegroundColor = ConsoleColor.White;
 					}
-					if (input.StartsWith ("/me"))
-					{
+					if (input.StartsWith ("/me")) {
 						string[] split = input.Split (new char[] { ' ' }, 2);
 						if (split.Length > 1)
 							client.SendAction (split [1], client.Channels [0].Name);
 						else
 							Console.WriteLine ("Nothing to action!");
-					}
-					else if(input.StartsWith("/setnickservpass"))
-					{
-						string[] split = input.Split(new char[] { ' ' }, 2);
-						if (split.Length > 1)
-						{
-							string encrypted = encrypter.EncryptToString(split[1]);
+					} else if (input.StartsWith ("/setnickservpass")) {
+						string[] split = input.Split (new char[] { ' ' }, 2);
+						if (split.Length > 1) {
+							string encrypted = encrypter.EncryptToString (split [1]);
 							ProgramSettings.settings.NickServPass = encrypted;
 							Console.ForegroundColor = ConsoleColor.Yellow;
-							Console.WriteLine("Password set!");
+							Console.WriteLine ("Password set!");
 							Console.ForegroundColor = ConsoleColor.White;
-							Console.WriteLine("Use /identify to identify now!");
-						}
-						else
-							Console.WriteLine("Can't have a blank password!");
-					}
-					else if(input.StartsWith("/register"))
-					{
+							Console.WriteLine ("Use /identify to identify now!");
+						} else
+							Console.WriteLine ("Can't have a blank password!");
+					} else if (input.StartsWith ("/register")) {
 						// /register <email> <pass>
-						string[] split = input.Split(new char[] { ' ' }, 3);
-						if (split.Length > 2)
-						{
-							client.SendRawMessage("PRIVMSG NickServ :REGISTER {0} {1}", split[1], split[2]);
+						string[] split = input.Split (new char[] { ' ' }, 3);
+						if (split.Length > 2) {
+							client.SendRawMessage ("PRIVMSG NickServ :REGISTER {0} {1}", split [1], split [2]);
 
 							Console.ForegroundColor = ConsoleColor.Yellow;
-							Console.WriteLine("If this was successful, please do a few things.");
-							Console.WriteLine("1. Confirm your registration email, you may need to use the /msg command from here");
-							Console.WriteLine("2. Set your NickServ pass via the /setnickservpass <password> command.");
+							Console.WriteLine ("If this was successful, please do a few things.");
+							Console.WriteLine ("1. Confirm your registration email, you may need to use the /msg command from here");
+							Console.WriteLine ("2. Set your NickServ pass via the /setnickservpass <password> command.");
 							Console.ForegroundColor = ConsoleColor.White;
+						} else
+							Console.WriteLine ("Syntax: /register <email> <pass>");
+					} 
+					else if (input.StartsWith ("/nick")) 
+					{
+						string[] split = input.Split (new char[]{ ' ' }, 2);
+						if (split.Length > 1) 
+						{
+							string legalNick = CleanInput (split [1]);
+							client.Nick (legalNick);
+							ProgramSettings.settings.LastUsedNick = legalNick;
 						}
-						else
-							Console.WriteLine("Syntax: /register <email> <pass>");
 					}
 					else if (input.StartsWith("/identify"))
 					{
@@ -326,6 +323,20 @@ namespace LuigibotMono
 						Console.Write ("Not in a channel.\n");
 					}
 				}
+			}
+		}
+
+		public static string CleanInput(string strIn)
+		{
+			// Replace invalid characters with empty strings. 
+			try {
+				return Regex.Replace(strIn, @"[^\w\.@-]", "", 
+					RegexOptions.None, TimeSpan.FromSeconds(1.5)); 
+			}
+			// If we timeout when replacing invalid characters,  
+			// we should return Empty. 
+			catch (RegexMatchTimeoutException) {
+				return String.Empty;   
 			}
 		}
 
@@ -602,6 +613,22 @@ namespace LuigibotMono
 						catch{}
 					} else
 						client.SendRawMessage ("PRIVMSG {0} :Slap who?", client.Channels [0].Name);
+				}
+			}
+			if (command.StartsWith ("nick") || command.StartsWith ("name")) 
+			{
+				string[] splitCommand = command.Split (new char[]{ ' ' }, 2);
+				if (splitCommand.Length > 1) 
+				{
+					foreach (string user in ProgramSettings.settings.UsersAllowedToDisable) 
+					{
+						if (user.ToLower () == sender.Nick.ToLower ()) 
+						{
+							string cleanNick = CleanInput (splitCommand [1]);
+							client.Nick (cleanNick);
+							ProgramSettings.settings.LastUsedNick = client.User.Nick;
+						}
+					}
 				}
 			}
 			if(command.StartsWith("motto") || command.StartsWith("slogan"))

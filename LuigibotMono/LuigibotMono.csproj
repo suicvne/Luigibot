@@ -7,7 +7,7 @@
     <OutputType>Exe</OutputType>
     <RootNamespace>LuigibotMono</RootNamespace>
     <AssemblyName>LuigibotMono</AssemblyName>
-    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <StartupObject>LuigibotMono.Program</StartupObject>
     <UseMSBuildEngine>False</UseMSBuildEngine>
     <ReleaseVersion>1.1.1.0</ReleaseVersion>
