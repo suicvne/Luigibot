@@ -11,6 +11,7 @@ namespace Luigibot2
         public bool EightballEnabled { get; set; }
         public bool SlapEnabled { get; set; }
         public bool WelcomeUserEnabled { get; set; }
+		public bool UrlParsingEnabled {get;set;}
         public string LastUsedNick { get; set; }
         public string LastJoinedServer { get; set; }
         public string LastJoinedChannel { get; set; }

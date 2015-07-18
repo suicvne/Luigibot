@@ -20,11 +20,11 @@ namespace Luigibot2
 
         public void LoadSettings()
         {
-            if (File.Exists(Environment.CurrentDirectory + @"\settings.json"))
+			if (File.Exists(Environment.CurrentDirectory + Path.PathSeparator + "settings.json"))
             {
                 JsonSerializer js = new JsonSerializer();
                 js.Formatting = Formatting.Indented;
-                using (StreamReader sr = new StreamReader(Environment.CurrentDirectory + @"\settings.json"))
+				using (StreamReader sr = new StreamReader(Environment.CurrentDirectory + Path.PathSeparator + "settings.json"))
                 {
                     using (JsonReader jsr = new JsonTextReader(sr))
                     {
@@ -40,8 +40,8 @@ namespace Luigibot2
                 settings.WelcomeUserEnabled = true;
                 settings.NickServPass = "";
                 settings.UsersAllowedToDisable = new string[] { "luigifan2010", "ghosthawk", "aeromatter", "joey" };
-                settings.LastJoinedChannel = "#smbx";
-                settings.LastJoinedServer = "irc.stardustfields.net";
+                settings.LastJoinedChannel = "#luigibot";
+                settings.LastJoinedServer = "irc.swiftirc.net";
                 settings.LastUsedNick = "Luigibot";
             }
         }
@@ -51,7 +51,7 @@ namespace Luigibot2
             JsonSerializer js = new JsonSerializer();
             js.Formatting = Formatting.Indented;
 
-            using(StreamWriter sw = new StreamWriter(Environment.CurrentDirectory + @"\settings.json"))
+			using(StreamWriter sw = new StreamWriter(Environment.CurrentDirectory + Path.PathSeparator + "settings.json"))
             {
                 using(JsonWriter jsw = new JsonTextWriter(sw))
                 {

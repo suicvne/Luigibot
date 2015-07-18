@@ -164,6 +164,8 @@ namespace LuigibotMono
 						OutputHelpMessage("/register - registers the bot's current nick with NickServ");
 						OutputHelpMessage("/changeprefix - changes the command prefix for the people down there in the IRC chat."); 
 						OutputHelpMessage ("/nick - changes the nick for the bot");
+						OutputHelpMessage ("/enableurlparse - enables URL parsing");
+						OutputHelpMessage ("/disableurlparse - disables URL parsing");
 						Console.ForegroundColor = ConsoleColor.Cyan;
 						Console.WriteLine ("---End Commands List---");
 						Console.ForegroundColor = ConsoleColor.White;
@@ -174,7 +176,24 @@ namespace LuigibotMono
 							client.SendAction (split [1], client.Channels [0].Name);
 						else
 							Console.WriteLine ("Nothing to action!");
-					} else if (input.StartsWith ("/setnickservpass")) {
+					} 
+					else if (input.StartsWith ("/enableurlparse")) 
+					{
+						ProgramSettings.settings.UrlParsingEnabled = true;
+
+						Console.ForegroundColor = ConsoleColor.Yellow;
+						Console.WriteLine ("URL Parsing Enabled");
+						Console.ForegroundColor = ConsoleColor.White;
+					} 
+					else if (input.StartsWith ("/disableurlparse")) 
+					{
+						ProgramSettings.settings.UrlParsingEnabled = true;
+
+						Console.ForegroundColor = ConsoleColor.Yellow;
+						Console.WriteLine ("URL Parsing Disabled");
+						Console.ForegroundColor = ConsoleColor.White;
+					}
+					else if (input.StartsWith ("/setnickservpass")) {
 						string[] split = input.Split (new char[] { ' ' }, 2);
 						if (split.Length > 1) {
 							string encrypted = encrypter.EncryptToString (split [1]);
@@ -408,8 +427,11 @@ namespace LuigibotMono
 				DateTime now = DateTime.Now;
 				foreach (IrcUserAndSeen u in UsersSeenDatabase.UsersSeenDatabase)
 				{
-					if (u.User == e.User)
+					if (u.User.Nick.ToLower() == e.User.Nick.ToLower())
+					{
 						UsersSeenDatabase.UsersSeenDatabase.Remove (u);
+						break;
+					}
 				}
 				UsersSeenDatabase.UsersSeenDatabase.Add (new IrcUserAndSeen (e.User, now));
 
@@ -468,7 +490,8 @@ namespace LuigibotMono
 				}
 				else if(e.PrivateMessage.Message.Contains("http://") || e.PrivateMessage.Message.Contains("https://"))
 				{
-					UrlSubmitted(e.PrivateMessage.Message);
+					if(ProgramSettings.settings.UrlParsingEnabled)
+						UrlSubmitted(e.PrivateMessage.Message);
 				}
 				else if (e.PrivateMessage.Message.StartsWith(client.User.Nick))
 				{
@@ -511,8 +534,11 @@ namespace LuigibotMono
 						DateTime now = DateTime.Now;
 						foreach (IrcUserAndSeen u in UsersSeenDatabase.UsersSeenDatabase)
 						{
-							if (u.User == ee)
+							if (u.User.Nick.ToLower() == ee.Nick.ToLower())
+							{
 								UsersSeenDatabase.UsersSeenDatabase.Remove (u);
+								break;
+							}
 						}
 						UsersSeenDatabase.UsersSeenDatabase.Add (new IrcUserAndSeen (ee, now));
 						Console.WriteLine ("Added new user to database {0} left at {1} (Quit)", ee.Nick, now.ToString ());
@@ -537,11 +563,15 @@ namespace LuigibotMono
 
 		private static void UrlSubmitted(string message)
 		{
+			bool secureUrl = false;
 			string url;
-			if(message.Contains("http://"))
-				url = message.Substring(message.LastIndexOf("http://")).Trim();
-			else
-				url = message.Substring(message.LastIndexOf("https://")).Trim();
+			if (message.Contains ("http://"))
+				url = message.Substring (message.LastIndexOf ("http://")).Trim ();
+			else 
+			{
+				url = message.Substring (message.LastIndexOf ("https://")).Trim ();
+				secureUrl = true;
+			}
 
 			//shoutout to Blank for this :D
 			//thank god because i'm terrible with regular expressions
@@ -555,7 +585,10 @@ namespace LuigibotMono
 				string source = wc.DownloadString(url);
 				string title = Regex.Match(source, @"\<title\b[^>]*\>\s*(?<Title>[\s\S]*?)\</title\>", RegexOptions.IgnoreCase).Groups["Title"].Value;
 
-				client.SendRawMessage("PRIVMSG {0} :{1} - {2}", client.Channels[0].Name, title, url.Substring(url.LastIndexOf("/")).Trim('/'));
+				if(secureUrl)
+					client.SendRawMessage("PRIVMSG {0} :{1} - {2}", client.Channels[0].Name, title, url.Substring(url.LastIndexOf("https://")).Trim('/'));
+				else
+					client.SendRawMessage("PRIVMSG {0} :{1} - {2}", client.Channels[0].Name, title, url.Substring(url.LastIndexOf("http://")).Trim('/'));
 			}
 			catch(Exception ex) 
 			{
@@ -613,6 +646,36 @@ namespace LuigibotMono
 						catch{}
 					} else
 						client.SendRawMessage ("PRIVMSG {0} :Slap who?", client.Channels [0].Name);
+				}
+			}
+			if (command.StartsWith ("enableurlparse")) 
+			{
+				foreach (string user in ProgramSettings.settings.UsersAllowedToDisable) 
+				{
+					if (user.ToLower () == sender.Nick.ToLower ()) 
+					{
+						ProgramSettings.settings.UrlParsingEnabled = true;
+
+						Console.ForegroundColor = ConsoleColor.Yellow;
+						Console.WriteLine ("URL Parsing Enabled");
+						Console.ForegroundColor = ConsoleColor.White;
+						client.SendRawMessage ("PRIVMSG {0} :Enabling URL parsing!", client.Channels[0].Name);
+					}
+				}
+			}
+			if (command.StartsWith ("disableurlparse")) 
+			{
+				foreach (string user in ProgramSettings.settings.UsersAllowedToDisable) 
+				{
+					if (user.ToLower () == sender.Nick.ToLower ()) 
+					{
+						ProgramSettings.settings.UrlParsingEnabled = false;
+
+						Console.ForegroundColor = ConsoleColor.Yellow;
+						Console.WriteLine ("URL Parsing Disabled");
+						Console.ForegroundColor = ConsoleColor.White;
+						client.SendRawMessage ("PRIVMSG {0} :Disabling URL parsing!", client.Channels[0].Name);
+					}
 				}
 			}
 			if (command.StartsWith ("nick") || command.StartsWith ("name")) 
@@ -864,12 +927,13 @@ namespace LuigibotMono
 			}
 			if (command.StartsWith ("status"))
 			{
-				client.SendRawMessage ("PRIVMSG {0} :Slap Enabled: {1}. Eight Ball Enabled: {2}. Welcome Enabled: {3}. Command Prefix: {4}", 
+				client.SendRawMessage ("PRIVMSG {0} :Slap Enabled: {1}. Eight Ball Enabled: {2}. Welcome Enabled: {3}. Command Prefix: {4}. URL Parsing: {5}", 
 					client.Channels [0].Name,
 					ProgramSettings.settings.SlapEnabled,
 					ProgramSettings.settings.EightballEnabled,
 					ProgramSettings.settings.WelcomeUserEnabled,
-					ProgramSettings.settings.CommandPrefix.ToString());
+					ProgramSettings.settings.CommandPrefix.ToString(),
+					ProgramSettings.settings.UrlParsingEnabled);
 			}
 			if (command.StartsWith ("lastfm"))
 			{
