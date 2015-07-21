@@ -355,7 +355,7 @@ namespace LuigibotMono
 			// If we timeout when replacing invalid characters,  
 			// we should return Empty. 
 			catch (RegexMatchTimeoutException) {
-				return String.Empty;   
+				return String.Empty;
 			}
 		}
 
