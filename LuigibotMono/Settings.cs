@@ -40,7 +40,7 @@ namespace Luigibot2
                 settings.WelcomeUserEnabled = true;
 				settings.SeenEnabled = true;
                 settings.NickServPass = "";
-                settings.UsersAllowedToDisable = new string[] { "luigifan2010", "ghosthawk", "aeromatter", "joey" };
+                settings.UsersAllowedToDisable = new List<string> { "luigifan2010", "ghosthawk", "aeromatter", "joey" };
                 settings.LastJoinedChannel = "#luigibot";
                 settings.LastJoinedServer = "irc.swiftirc.net";
                 settings.LastUsedNick = "Luigibot";

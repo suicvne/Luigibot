@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Windows.Forms;
 using System.Net;
 using System.Text.RegularExpressions;
+using ChatSharp.Events;
 
 #if __MONOCS__
 #else
@@ -168,10 +169,53 @@ namespace LuigibotMono
 						OutputHelpMessage ("/disableurlparse - disables URL parsing");
 						OutputHelpMessage ("/disableseen - disables the seen command");
                         OutputHelpMessage ("/enableseen - enables the seen command");
+                        OutputHelpMessage("/adduser - adds user to the VIP list (allowed to disable/enable commands)");
+                        OutputHelpMessage("/removeuser - removes a user to the VIP list (allowed to disable/enable commands)");
 						Console.ForegroundColor = ConsoleColor.Cyan;
 						Console.WriteLine ("---End Commands List---");
 						Console.ForegroundColor = ConsoleColor.White;
 					}
+                    if (input.StartsWith("/adduser"))
+                    {
+                        string[] split = input.Split(new char[]{' '}, 2);
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                        if (split.Length > 1)
+                        {
+                            ProgramSettings.settings.UsersAllowedToDisable.Add(split[1].ToLower());
+                            Console.WriteLine("Added user \"{0}\" to the VIP list", split[1].ToLower());
+                        }
+                        else
+                        {
+                            Console.WriteLine("Who?");
+                        }
+                        Console.ForegroundColor = ConsoleColor.White;
+                    }
+                    if (input.StartsWith("/removeuser"))
+                    {
+                        string[] split = input.Split(new char[]{' '}, 2);
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                        if (split.Length > 1)
+                        {
+                            bool removed = false;
+                            for(int i = 0; i < ProgramSettings.settings.UsersAllowedToDisable.Count; i++)
+                            {
+                                if (ProgramSettings.settings.UsersAllowedToDisable[i] == split[1].ToLower())
+                                {
+                                    ProgramSettings.settings.UsersAllowedToDisable.RemoveAt(i);
+                                    removed = true;
+                                }
+                            }
+                            if (removed)
+                                Console.WriteLine("Removed user \"{0}\" successfully!", split[1].ToLower());
+                            else
+                                Console.WriteLine("User didn't exist!");
+                        }
+                        else
+                        {
+                            Console.WriteLine("Remove who?");
+                        }
+                        Console.ForegroundColor = ConsoleColor.White;
+                    }
                     if (input.StartsWith("/me"))
                     {
                         string[] split = input.Split(new char[] { ' ' }, 2);
@@ -459,7 +503,7 @@ namespace LuigibotMono
 			};
 			client.UserJoinedChannel += (s, e) =>
 			{
-				if (e.User.Nick.ToLower () == "luigifan2010")
+				if (e.User.Nick.ToLower () == "axiom")
 				{
 					client.SendAction ("welcomes daddy!", client.Channels [0].Name);
 					return;
@@ -510,7 +554,7 @@ namespace LuigibotMono
 				else if(e.PrivateMessage.Message.Contains("http://") || e.PrivateMessage.Message.Contains("https://"))
 				{
 					if(ProgramSettings.settings.UrlParsingEnabled)
-						UrlSubmitted(e.PrivateMessage.Message);
+                            UrlSubmitted(e);
 				}
 				else if (e.PrivateMessage.Message.StartsWith(client.User.Nick))
 				{
@@ -580,15 +624,15 @@ namespace LuigibotMono
 			Environment.Exit (0);
 		}
 
-		private static void UrlSubmitted(string message)
+        private static void UrlSubmitted(PrivateMessageEventArgs e)
 		{
 			bool secureUrl = false;
 			string url;
-			if (message.Contains ("http://"))
-				url = message.Substring (message.LastIndexOf ("http://")).Trim ();
+            if (e.PrivateMessage.Message.Contains ("http://"))
+                url = e.PrivateMessage.Message.Substring (e.PrivateMessage.Message.LastIndexOf ("http://")).Trim ();
 			else 
 			{
-				url = message.Substring (message.LastIndexOf ("https://")).Trim ();
+                url = e.PrivateMessage.Message.Substring (e.PrivateMessage.Message.LastIndexOf ("https://")).Trim ();
 				secureUrl = true;
 			}
 
@@ -597,17 +641,18 @@ namespace LuigibotMono
 			WebClient wc = new WebClient();
 			try
 			{
+                client.SendRawMessage("NOTICE {0} :One sec, {1}..", e.PrivateMessage.User.Nick, e.PrivateMessage.User.Nick);
 				if(url.Contains("pornhub"))
 				{
 						return;
 				}
 				string source = wc.DownloadString(url);
 				string title = Regex.Match(source, @"\<title\b[^>]*\>\s*(?<Title>[\s\S]*?)\</title\>", RegexOptions.IgnoreCase).Groups["Title"].Value;
-
+                title = title.Trim(new char[]{'\n', '\r'});
 				if(secureUrl)
-					client.SendRawMessage("PRIVMSG {0} :{1} - {2}", client.Channels[0].Name, title, url.Substring(url.LastIndexOf("https://")).Trim('/'));
+                    client.SendRawMessage("PRIVMSG {0} :{1} submitted a link: [{2}] - {3}", client.Channels[0].Name, e.PrivateMessage.User.Nick, title, url.Substring(url.LastIndexOf("https://")).Trim('/'));
 				else
-					client.SendRawMessage("PRIVMSG {0} :{1} - {2}", client.Channels[0].Name, title, url.Substring(url.LastIndexOf("http://")).Trim('/'));
+                    client.SendRawMessage("PRIVMSG {0} :{1} submitted a link: [{2}] - {3}", client.Channels[0].Name, e.PrivateMessage.User.Nick, title, url.Substring(url.LastIndexOf("http://")).Trim('/'));
 			}
 			catch(Exception ex) 
 			{
@@ -667,6 +712,55 @@ namespace LuigibotMono
 						client.SendRawMessage ("PRIVMSG {0} :Slap who?", client.Channels [0].Name);
 				}
 			}
+            if (command.StartsWith("removeuser"))
+            {
+                string[] split = command.Split(new char[]{' '}, 2);
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                if (split.Length > 1)
+                {
+                    bool removed = false;
+                    for(int i = 0; i < ProgramSettings.settings.UsersAllowedToDisable.Count; i++)
+                    {
+                        if (ProgramSettings.settings.UsersAllowedToDisable[i] == split[1].ToLower())
+                        {
+                            ProgramSettings.settings.UsersAllowedToDisable.RemoveAt(i);
+                            removed = true;
+                        }
+                    }
+                    if (removed)
+                    {
+                        Console.WriteLine("Removed user \"{0}\" successfully!", split[1].ToLower());
+                        client.SendRawMessage("PRIVMSG {0} :Removed user \"{1}\" successfully!", client.Channels[0].Name, split[1].ToLower());
+                    }
+                    else
+                    {
+                        Console.WriteLine("User doesn't exist!");
+                        client.SendRawMessage("PRIVMSG {0} :That user never existed in the database!", client.Channels[0].Name);
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Remove who?");
+                }
+                Console.ForegroundColor = ConsoleColor.White;
+            }
+            if (command.StartsWith("adduser"))
+            {
+                string[] split = command.Split(new char[]{' '}, 2);
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                if (split.Length > 1)
+                {
+                    ProgramSettings.settings.UsersAllowedToDisable.Add(split[1].ToLower());
+                    Console.WriteLine("Added user \"{0}\" to the VIP list", split[1].ToLower());
+                    client.SendRawMessage("PRIVMSG {0} :Added user \"{1}\" to the VIP list.?", client.Channels[0].Name, split[1].ToLower());
+                }
+                else
+                {
+                    Console.WriteLine("Who?");
+                    client.SendRawMessage("PRIVMSG {0} :Add who?", client.Channels[0].Name);
+                }
+                Console.ForegroundColor = ConsoleColor.White;
+            }
             if (command.StartsWith("disableseen"))
             {
                 foreach (string user in ProgramSettings.settings.UsersAllowedToDisable)

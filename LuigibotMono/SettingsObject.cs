@@ -19,7 +19,7 @@ namespace Luigibot2
 		public string WelcomeMessage { get; set; }
         //This string is AES Encrypted
         public string NickServPass { get; set; }
-        public string[] UsersAllowedToDisable { get; set; }
+        public List<string> UsersAllowedToDisable { get; set; }
         public char CommandPrefix { get; set; }
 
         public SettingsObject()
@@ -28,7 +28,6 @@ namespace Luigibot2
             SlapEnabled = true;
             WelcomeUserEnabled = true;
 			SeenEnabled = true;
-            UsersAllowedToDisable = new string[] { "luigifan2010", "ghosthawk", "aeromatter", "joey" };
             LastUsedNick = "Luigibot";
             LastJoinedServer = "irc.stardustfields.net";
             NickServPass = "";

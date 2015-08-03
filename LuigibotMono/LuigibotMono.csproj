@@ -11,6 +11,7 @@
     <StartupObject>LuigibotMono.Program</StartupObject>
     <UseMSBuildEngine>False</UseMSBuildEngine>
     <ReleaseVersion>1.1.1.0</ReleaseVersion>
+    <ApplicationIcon>Luigibot32.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <DebugSymbols>true</DebugSymbols>
