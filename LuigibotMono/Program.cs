@@ -171,10 +171,22 @@ namespace LuigibotMono
                         OutputHelpMessage ("/enableseen - enables the seen command");
                         OutputHelpMessage("/adduser - adds user to the VIP list (allowed to disable/enable commands)");
                         OutputHelpMessage("/removeuser - removes a user to the VIP list (allowed to disable/enable commands)");
+                        OutputHelpMessage("/save - forces a save of the JSON settings and databases");
 						Console.ForegroundColor = ConsoleColor.Cyan;
 						Console.WriteLine ("---End Commands List---");
 						Console.ForegroundColor = ConsoleColor.White;
 					}
+                    if (input.StartsWith("/save"))
+                    {
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+
+                        Console.WriteLine("Saving settings and databases..");
+                        ProgramSettings.WriteSettings();
+                        UsersSeenDatabase.WriteDatabase();
+                        Console.WriteLine("Save complete!");
+
+                        Console.ForegroundColor = ConsoleColor.White;
+                    }
                     if (input.StartsWith("/adduser"))
                     {
                         string[] split = input.Split(new char[]{' '}, 2);
