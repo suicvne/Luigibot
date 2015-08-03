@@ -166,17 +166,36 @@ namespace LuigibotMono
 						OutputHelpMessage ("/nick - changes the nick for the bot");
 						OutputHelpMessage ("/enableurlparse - enables URL parsing");
 						OutputHelpMessage ("/disableurlparse - disables URL parsing");
+						OutputHelpMessage ("/disableseen - disables the seen command");
+                        OutputHelpMessage ("/enableseen - enables the seen command");
 						Console.ForegroundColor = ConsoleColor.Cyan;
 						Console.WriteLine ("---End Commands List---");
 						Console.ForegroundColor = ConsoleColor.White;
 					}
-					if (input.StartsWith ("/me")) {
-						string[] split = input.Split (new char[] { ' ' }, 2);
-						if (split.Length > 1)
-							client.SendAction (split [1], client.Channels [0].Name);
-						else
-							Console.WriteLine ("Nothing to action!");
-					} 
+                    if (input.StartsWith("/me"))
+                    {
+                        string[] split = input.Split(new char[] { ' ' }, 2);
+                        if (split.Length > 1)
+                            client.SendAction(split[1], client.Channels[0].Name);
+                        else
+                            Console.WriteLine("Nothing to action!");
+                    }
+                    else if (input.StartsWith("/enableseen"))
+                    {
+                        ProgramSettings.settings.SeenEnabled = true;
+
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                        Console.WriteLine ("Seen command enabled");
+                        Console.ForegroundColor = ConsoleColor.White;
+                    }
+					else if (input.StartsWith ("/disableseen")) 
+					{
+						ProgramSettings.settings.SeenEnabled = false;
+
+						Console.ForegroundColor = ConsoleColor.Yellow;
+						Console.WriteLine ("Seen command disabled");
+						Console.ForegroundColor = ConsoleColor.White;
+					}
 					else if (input.StartsWith ("/enableurlparse")) 
 					{
 						ProgramSettings.settings.UrlParsingEnabled = true;
@@ -648,6 +667,36 @@ namespace LuigibotMono
 						client.SendRawMessage ("PRIVMSG {0} :Slap who?", client.Channels [0].Name);
 				}
 			}
+            if (command.StartsWith("disableseen"))
+            {
+                foreach (string user in ProgramSettings.settings.UsersAllowedToDisable)
+                {
+                    if (user.ToLower() == sender.Nick.ToLower())
+                    {
+                        ProgramSettings.settings.SeenEnabled = false;
+
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                        Console.WriteLine ("Seen Command Disabled");
+                        Console.ForegroundColor = ConsoleColor.White;
+                        client.SendRawMessage ("PRIVMSG {0} :Disabled seen command!", client.Channels[0].Name);
+                    }
+                }
+            }
+            if (command.StartsWith("enableseen"))
+            {
+                foreach (string user in ProgramSettings.settings.UsersAllowedToDisable)
+                {
+                    if (user.ToLower() == sender.Nick.ToLower())
+                    {
+                        ProgramSettings.settings.SeenEnabled = true;
+
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                        Console.WriteLine ("Seen Command Enabled");
+                        Console.ForegroundColor = ConsoleColor.White;
+                        client.SendRawMessage ("PRIVMSG {0} :Enabled seen command!", client.Channels[0].Name);
+                    }
+                }
+            }
 			if (command.StartsWith ("enableurlparse")) 
 			{
 				foreach (string user in ProgramSettings.settings.UsersAllowedToDisable) 
