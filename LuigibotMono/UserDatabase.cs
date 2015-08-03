@@ -21,12 +21,12 @@ namespace Luigibot2
         /// <param name="path"></param>
 		public void LoadDatabase(IrcClient client)
 		{
-			if (File.Exists(Environment.CurrentDirectory + Path.PathSeparator +  "seen_database.json"))
+            if (File.Exists(Environment.CurrentDirectory + Path.DirectorySeparatorChar +  "seen_database.json"))
             {
                 JsonSerializer js = new JsonSerializer();
                 js.Formatting = Formatting.Indented;
 
-				using (StreamReader sr = new StreamReader(Environment.CurrentDirectory + Path.PathSeparator + "seen_database.json"))
+                using (StreamReader sr = new StreamReader(Environment.CurrentDirectory + Path.DirectorySeparatorChar + "seen_database.json"))
                 {
                     using (JsonReader jsr = new JsonTextReader(sr))
                     {
@@ -51,7 +51,7 @@ namespace Luigibot2
             JsonSerializer js = new JsonSerializer();
             js.Formatting = Formatting.Indented;
 
-			using(StreamWriter sw = new StreamWriter(Environment.CurrentDirectory + Path.PathSeparator + "seen_database.json"))
+            using(StreamWriter sw = new StreamWriter(Environment.CurrentDirectory + Path.DirectorySeparatorChar + "seen_database.json"))
             {
                 using(JsonWriter jsw = new JsonTextWriter(sw))
                 {
