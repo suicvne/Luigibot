@@ -20,11 +20,11 @@ namespace Luigibot2
 
         public void LoadSettings()
         {
-			if (File.Exists(Environment.CurrentDirectory + Path.PathSeparator + "settings.json"))
+			if (File.Exists(Environment.CurrentDirectory + Path.DirectorySeparatorChar + "settings.json"))
             {
                 JsonSerializer js = new JsonSerializer();
                 js.Formatting = Formatting.Indented;
-				using (StreamReader sr = new StreamReader(Environment.CurrentDirectory + Path.PathSeparator + "settings.json"))
+				using (StreamReader sr = new StreamReader(Environment.CurrentDirectory + Path.DirectorySeparatorChar + "settings.json"))
                 {
                     using (JsonReader jsr = new JsonTextReader(sr))
                     {
@@ -51,7 +51,7 @@ namespace Luigibot2
             JsonSerializer js = new JsonSerializer();
             js.Formatting = Formatting.Indented;
 
-			using(StreamWriter sw = new StreamWriter(Environment.CurrentDirectory + Path.PathSeparator + "settings.json"))
+			using(StreamWriter sw = new StreamWriter(Environment.CurrentDirectory + Path.DirectorySeparatorChar + "settings.json"))
             {
                 using(JsonWriter jsw = new JsonTextWriter(sw))
                 {
