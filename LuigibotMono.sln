@@ -1,9 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LuigibotMono", "LuigibotMono\LuigibotMono.csproj", "{0473709F-981F-4224-A028-13FB45641C7F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Luigibot-IRC", "LuigibotMono\Luigibot-IRC.csproj", "{0473709F-981F-4224-A028-13FB45641C7F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatSharp", "ChatSharp\ChatSharp.csproj", "{4033AFFA-BEA3-4BDF-84EA-59A23360FD36}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Luigibot", "Luigibot\Luigibot.csproj", "{FE483628-34F9-4A1A-AF42-B48FD4F2580A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Luigibot-Slack", "Luigibot-Slack\Luigibot-Slack.csproj", "{5649A307-0E69-4664-837D-5B26F3607959}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Luigibot-Common", "Luigibot-Common\Luigibot-Common.csproj", "{B0E678F1-9D4B-4C26-8E31-2F15754A0AB6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,6 +25,18 @@ Global
 		{4033AFFA-BEA3-4BDF-84EA-59A23360FD36}.Debug|x86.Build.0 = Debug|Any CPU
 		{4033AFFA-BEA3-4BDF-84EA-59A23360FD36}.Release|x86.ActiveCfg = Release|Any CPU
 		{4033AFFA-BEA3-4BDF-84EA-59A23360FD36}.Release|x86.Build.0 = Release|Any CPU
+		{5649A307-0E69-4664-837D-5B26F3607959}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{5649A307-0E69-4664-837D-5B26F3607959}.Debug|x86.Build.0 = Debug|Any CPU
+		{5649A307-0E69-4664-837D-5B26F3607959}.Release|x86.ActiveCfg = Release|Any CPU
+		{5649A307-0E69-4664-837D-5B26F3607959}.Release|x86.Build.0 = Release|Any CPU
+		{B0E678F1-9D4B-4C26-8E31-2F15754A0AB6}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{B0E678F1-9D4B-4C26-8E31-2F15754A0AB6}.Debug|x86.Build.0 = Debug|Any CPU
+		{B0E678F1-9D4B-4C26-8E31-2F15754A0AB6}.Release|x86.ActiveCfg = Release|Any CPU
+		{B0E678F1-9D4B-4C26-8E31-2F15754A0AB6}.Release|x86.Build.0 = Release|Any CPU
+		{FE483628-34F9-4A1A-AF42-B48FD4F2580A}.Debug|x86.ActiveCfg = Debug|x86
+		{FE483628-34F9-4A1A-AF42-B48FD4F2580A}.Debug|x86.Build.0 = Debug|x86
+		{FE483628-34F9-4A1A-AF42-B48FD4F2580A}.Release|x86.ActiveCfg = Release|x86
+		{FE483628-34F9-4A1A-AF42-B48FD4F2580A}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		Policies = $0
