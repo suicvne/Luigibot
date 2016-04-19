@@ -70,6 +70,7 @@ namespace Luigibot.Discord
 
         public event EventHandler<EventArgs> Connected;
         public event EventHandler<IMessageReceivedEventArgs> MessageReceived;
+        public event EventHandler<IMessageReceivedEventArgs> MentionReceived;
 
         public void SendMessage(string text, IChannel target)
         {
@@ -98,6 +99,16 @@ namespace Luigibot.Discord
                     };
                     MessageReceived?.Invoke(this, args);
                 };
+                client.MentionReceived += (sender, e) =>
+                {
+                    DiscordMessageReceivedEventArgs args = new DiscordMessageReceivedEventArgs
+                    {
+                        Channel = new LuigibotDiscordChannel(e.Channel),
+                        Member = new LuigibotDiscordMember(e.Author),
+                        Text = e.MessageText
+                    };
+                    MentionReceived?.Invoke(this, args);
+                };
                 client.SendLoginRequest();
                 client.Connect();
             });
@@ -110,3 +121,4 @@ namespace Luigibot.Discord
         }
     }
 }
+

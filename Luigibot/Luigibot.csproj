@@ -34,10 +34,19 @@
     <ApplicationIcon>Luigibot32.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="DiscordSharp, Version=0.6.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\DiscordSharp\DiscordSharp\bin\Debug\DiscordSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="SlackAPI, Version=1.0.4.1, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\SlackAPI\bin\Debug\SlackAPI.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BaseOwnerModule.cs" />
+    <Compile Include="OS.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

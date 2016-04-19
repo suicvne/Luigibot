@@ -36,6 +36,7 @@ namespace LuigibotSlack
 		}
 
         public event EventHandler<IMessageReceivedEventArgs> MessageReceived;
+        public event EventHandler<IMessageReceivedEventArgs> MentionReceived;
 
 		public SlackSocketClient RawClient {get{return client;}}
 		SlackSocketClient client;
@@ -68,13 +69,16 @@ namespace LuigibotSlack
 			    Connected.Invoke(this, null);
 				client.OnMessageReceived += (obj) => 
 				{
-				    SlackMessageEventArgs e = new SlackMessageEventArgs
-					{
-					    Text = obj.text,
-						Channel = new SlackChannel(GetChannelByName(obj.channel)),
-						Member = new SlackMember(GetUserByName(obj.user))
+                    SlackMessageEventArgs e = new SlackMessageEventArgs
+                    {
+                        Text = obj.text,
+                        Member = new SlackMember(GetUserByName(obj.user))
                     };
-					MessageReceived?.Invoke(this, e);
+                    e.Channel = GetChannelByName(obj.channel) == null ? new SlackChannel(e.Member.Name, obj.channel) : new SlackChannel(GetChannelByName(obj.channel));
+                    if (e.Text.Contains($"<@{client.MySelf.id}>"))
+                        MentionReceived?.Invoke(this, e);
+                    else
+					    MessageReceived?.Invoke(this, e);
                 };
 			}, 
 			() => 
@@ -83,9 +87,10 @@ namespace LuigibotSlack
 			});
 		}
 
-		private SlackAPI.Channel GetChannelByName(string name)
+        private SlackAPI.Channel GetChannelByName(string name)
 		{
-			return client.Channels.Find (x => x.id == name);
+            var channel = client.Channels.Find(x => x.id == name);
+            return channel;
 		}
 
 		private SlackAPI.User GetUserByName(string name)

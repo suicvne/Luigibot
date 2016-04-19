@@ -28,7 +28,7 @@ namespace DiscordSharp.Commands
     public class CommandsManager
     {
         private readonly IIntegration __client;
-        public IIntegration Client
+        public IIntegration Integration
         {
             get
             {

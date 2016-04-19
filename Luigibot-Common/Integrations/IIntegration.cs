@@ -18,6 +18,7 @@ namespace LuigibotCommon.Integrations
 		bool IsIntegrationRunning {get;set;}
 
 		event EventHandler<IMessageReceivedEventArgs> MessageReceived;
+        event EventHandler<IMessageReceivedEventArgs> MentionReceived;
 		event EventHandler<EventArgs> Connected;
 
 		void StartIntegration();

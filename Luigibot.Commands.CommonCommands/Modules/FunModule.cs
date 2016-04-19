@@ -69,31 +69,31 @@ namespace Luigibot.Commands.CommonCommands.Modules
         {
             manager.AddCommand(new CommandStub("f", "Pay respect.", "Press f", PermissionType.User, 0, cmdArgs =>
             {
-                manager.Client.SendMessage($"{cmdArgs.Author.Name} has paid their respects {FEmojis[rng.Next(0, FEmojis.Length - 1)]}", cmdArgs.Channel);
+                manager.Integration.SendMessage($"{cmdArgs.Author.Name} has paid their respects {FEmojis[rng.Next(0, FEmojis.Length - 1)]}", cmdArgs.Channel);
             }), this);
             manager.AddCommand(new CommandStub("orange", "Orangifies your text.", "Discord only.", PermissionType.User, 1, cmdArgs =>
             {
                 if (cmdArgs.FromIntegration.ToLower().Trim() == "discord")
                 {
-                    manager.Client.SendMessage($"```fix\n{cmdArgs.Args[0]}\n```", cmdArgs.Channel);
+                    manager.Integration.SendMessage($"```fix\n{cmdArgs.Args[0]}\n```", cmdArgs.Channel);
                 }
                 else
-                    manager.Client.SendMessage($"This command is only available on Discord!", cmdArgs.Channel);
+                    manager.Integration.SendMessage($"This command is only available on Discord!", cmdArgs.Channel);
             }));
             manager.AddCommand(new CommandStub("nf", "Pay no respect.", "Press nf", PermissionType.User, cmdArgs =>
             {
-                manager.Client.SendMessage($"{cmdArgs.Author.Name} refuses to pay respect. {FEmojis[manager.rng.Next(0, FEmojis.Length - 1)]}", cmdArgs.Channel);
+                manager.Integration.SendMessage($"{cmdArgs.Author.Name} refuses to pay respect. {FEmojis[manager.rng.Next(0, FEmojis.Length - 1)]}", cmdArgs.Channel);
             }), this);
             manager.AddCommand(new CommandStub("8ball", "Have your fortune told.", "8ball <your message here>", PermissionType.User, cmdArgs =>
             {
                 manager.rng.Next(0, EightballMessages.Length);
                 manager.rng.Next(0, EightballMessages.Length);
                 int index = manager.rng.Next(0, EightballMessages.Length);
-                manager.Client.SendMessage($"{cmdArgs.Author.Mention()}: {manager.Client.BoldText(EightballMessages[index])}", cmdArgs.Channel);
+                manager.Integration.SendMessage($"{cmdArgs.Author.Mention()}: {manager.Integration.BoldText(EightballMessages[index])}", cmdArgs.Channel);
             }), this);
             manager.AddCommand(new CommandStub("42", "..", "...", PermissionType.User, cmdArgs =>
             {
-                manager.Client.SendMessage("The answer to life, the universe, and everything.", cmdArgs.Channel);
+                manager.Integration.SendMessage("The answer to life, the universe, and everything.", cmdArgs.Channel);
             }), this);
             manager.AddCommand(new CommandStub("khaled", "Anotha one.", "", cmdArgs =>
             {
@@ -103,7 +103,7 @@ namespace Luigibot.Commands.CommonCommands.Modules
                     manager.rng = new Random((int)DateTime.Now.Ticks);
                 }
                 var quote = KhaledQuotes[manager.rng.Next(0, KhaledQuotes.Length - 1)];
-                manager.Client.SendMessage($"{manager.Client.BoldText(manager.Client.ItalicizeText(quote))}", cmdArgs.Channel);
+                manager.Integration.SendMessage($"{manager.Integration.BoldText(manager.Integration.ItalicizeText(quote))}", cmdArgs.Channel);
             }), this);
         }
     }

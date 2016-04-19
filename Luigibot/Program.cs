@@ -86,11 +86,11 @@ namespace Luigibot
 
                         discord.Connected += (sender, e) =>
                         {
-                            Log(IntegrationType.Discord, $"[Discord] Discord connected!");
+                            Log(IntegrationType.Discord, $"Discord connected!");
                         };
                         discord.MessageReceived += (sender, e) =>
                         {
-                            Log(IntegrationType.Discord, string.Format("[Discord] Message from {0} in #{1}: {2}", e.Member.Name, e.Channel.Name, e.Text));
+                            Log(IntegrationType.Discord, string.Format("Message from {0} in #{1}: {2}", e.Member.Name, e.Channel.Name, e.Text));
                             if(e.Text.Length > 0 && e.Text[0] == '-')
                             {
                                 try
@@ -114,11 +114,11 @@ namespace Luigibot
 
                         slackClient.Connected += (sender, e) =>
                         {
-                            Log(integration, "[Slack] Connected to Slack!");
+                            Log(integration, "Connected to Slack!");
                         };
                         slackClient.MessageReceived += (x, s) =>
                         {
-                            Log(integration, string.Format("[Slack] Message from {0} in {1}: {2}", s.Member.Name, s.Channel.Name, s.Text));
+                            Log(integration, string.Format("Message from {0} in {1}: {2}", s.Member.Name, s.Channel.Name, s.Text));
                             if (s.Text.Length > 0 && s.Text[0] == '-')
                             {
                                 try

@@ -10,10 +10,12 @@ namespace Luigibot
     public class BaseOwnerModule : IModule
     {
         private Luigibot mainEntry;
+        private DateTime InitializeTime;
 
         public BaseOwnerModule(Luigibot main)
         {
             mainEntry = main;
+            InitializeTime = DateTime.Now;
             Name = "base";
             Description = "The base set of modules that cannot be enabled or disabled by the user.";
         }
@@ -48,7 +50,7 @@ namespace Luigibot
                     }
                     string id = e.Args[1].Trim(new char[] { '<', '@', '>' });
                     manager.AddPermission(id, type);
-                    manager.Client.SendMessage($"Given permission {type.ToString().Substring(type.ToString().IndexOf('.') + 1)} to <@{id}>!", e.Channel);
+                    manager.Integration.SendMessage($"Given permission {type.ToString().Substring(type.ToString().IndexOf('.') + 1)} to <@{id}>!", e.Channel);
                 }
             }), this);
 
@@ -58,20 +60,20 @@ namespace Luigibot
                 {
                     if (!manager.ModuleEnabled(cmdArgs.Args[0]))
                     {
-                        manager.Client.SendMessage("Module already disabled!", cmdArgs.Channel);
+                        manager.Integration.SendMessage("Module already disabled!", cmdArgs.Channel);
                         return;
                     }
                     try
                     {
                         manager.DisableModule(cmdArgs.Args[0]);
-                        manager.Client.SendMessage($"Disabled {cmdArgs.Args[0]}.", cmdArgs.Channel);
+                        manager.Integration.SendMessage($"Disabled {cmdArgs.Args[0]}.", cmdArgs.Channel);
                     }
                     catch (Exception ex)
-                    { manager.Client.SendMessage($"Couldn't disable module! {ex.Message}", cmdArgs.Channel); }
+                    { manager.Integration.SendMessage($"Couldn't disable module! {ex.Message}", cmdArgs.Channel); }
                 }
                 else
                 {
-                    manager.Client.SendMessage("What module?", cmdArgs.Channel);
+                    manager.Integration.SendMessage("What module?", cmdArgs.Channel);
                 }
             }), this);
 
@@ -81,20 +83,20 @@ namespace Luigibot
                 {
                     if (manager.ModuleEnabled(cmdArgs.Args[0]))
                     {
-                        manager.Client.SendMessage("Module already enabled!", cmdArgs.Channel);
+                        manager.Integration.SendMessage("Module already enabled!", cmdArgs.Channel);
                         return;
                     }
                     try
                     {
                         manager.EnableModule(cmdArgs.Args[0]);
-                        manager.Client.SendMessage($"Enabled {cmdArgs.Args[0]}.", cmdArgs.Channel);
+                        manager.Integration.SendMessage($"Enabled {cmdArgs.Args[0]}.", cmdArgs.Channel);
                     }
                     catch (Exception ex)
-                    { manager.Client.SendMessage($"Couldn't enable module! {ex.Message}", cmdArgs.Channel); }
+                    { manager.Integration.SendMessage($"Couldn't enable module! {ex.Message}", cmdArgs.Channel); }
                 }
                 else
                 {
-                    manager.Client.SendMessage("What module?", cmdArgs.Channel);
+                    manager.Integration.SendMessage("What module?", cmdArgs.Channel);
                 }
             }), this);
 
@@ -106,7 +108,7 @@ namespace Luigibot
                     {
                         msg += $"\n`{kvp.Key.Name}` - {kvp.Value.ToString()}";
                     }
-                    manager.Client.SendMessage(msg, cmdArgs.Channel);
+                    manager.Integration.SendMessage(msg, cmdArgs.Channel);
                 }));
 
             manager.AddCommand(new CommandStub("changeprefix", "Changes the command prefix to a specified character.", "", PermissionType.Owner, 1, cmdArgs =>
@@ -134,7 +136,7 @@ namespace Luigibot
             {
                 if (cmdArgs.FromIntegration.ToLower().Trim() == "discord")
                 {
-                    manager.Client.SendMessage($"Coming soon!", cmdArgs.Channel);
+                    manager.Integration.SendMessage($"Coming soon!", cmdArgs.Channel);
                     //if (cmdArgs.Args.Count > 0)
                     //{
                     //    if (cmdArgs.Args[0].ToLower().Trim() == "offline")
@@ -154,6 +156,28 @@ namespace Luigibot
                     //}
                 }
             }), this);
+
+            manager.AddCommand(new CommandStub("about", "Shows bot information", "", cmdArgs =>
+            {
+                string message = manager.Integration.BoldText("About Luigibot");
+                message += $"\nOwner: Mike Santiago\n";
+                message += $"Libraries: DiscordSharp {typeof(DiscordSharp.DiscordClient).Assembly.GetName().Version.ToString()}\n";
+                message += $"     SlackAPI w/ WebSocketSharp {typeof(SlackAPI.SlackClient).Assembly.GetName().Version.ToString()}\n";
+                var uptime = (DateTime.Now - InitializeTime);
+                message += $"Uptime: {uptime.Days} days, {uptime.Hours} hours, {uptime.Minutes} minutes\n";
+                message += $"Runtime: ";
+                if (Type.GetType("Mono.Runtime") != null)
+                    message += "Mono\n";
+                else
+                    message += ".Net\n";
+
+                message += $"OS: {OperatingSystemDetermination.GetUnixName()}\n";
+                message += $"Current Integration: {manager.Integration.IntegrationName} ({manager.Integration.IntegrationDescription})\n";
+
+                message += "Commands: " + manager.Commands.Count + "\n";
+
+                manager.Integration.SendMessage(message, cmdArgs.Channel);
+            }));
         }
     }
 }
