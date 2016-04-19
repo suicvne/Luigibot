@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -30,22 +30,41 @@
     <Externalconsole>true</Externalconsole>
     <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>Luigibot32.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BaseOwnerModule.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
+    <ProjectReference Include="..\Luigibot-Common\Luigibot-Common.csproj">
+      <Project>{b0e678f1-9d4b-4c26-8e31-2f15754a0ab6}</Project>
+      <Name>Luigibot-Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Luigibot-Slack\Luigibot-Slack.csproj">
       <Project>{5649A307-0E69-4664-837D-5B26F3607959}</Project>
       <Name>Luigibot-Slack</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Luigibot-Common\Luigibot-Common.csproj">
-      <Project>{B0E678F1-9D4B-4C26-8E31-2F15754A0AB6}</Project>
-      <Name>Luigibot-Common</Name>
+    <ProjectReference Include="..\Luigibot.Commands.CommonCommands\Luigibot.Commands.CommonCommands.csproj">
+      <Project>{6D74B1F1-BF66-4455-B2D0-56D9D580E894}</Project>
+      <Name>Luigibot.Commands.CommonCommands</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Luigibot.Commands\Luigibot.Commands.csproj">
+      <Project>{2e99d97f-3480-43e2-ac9d-7dae521cb610}</Project>
+      <Name>Luigibot.Commands</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Luigibot.Discord\Luigibot.Discord.csproj">
+      <Project>{07e6f504-4e4f-41ac-9652-3a0ba00e5b30}</Project>
+      <Name>Luigibot.Discord</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="Luigibot32.ico" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

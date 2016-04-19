@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace LuigibotCommon
+namespace LuigibotCommon.Integrations
 {
 	/// <summary>
 	/// Defines a basic Channel interface

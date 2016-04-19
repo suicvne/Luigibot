@@ -1,5 +1,5 @@
 ﻿using System;
-using LuigibotCommon;
+using LuigibotCommon.Integrations;
 
 namespace LuigibotSlack
 {

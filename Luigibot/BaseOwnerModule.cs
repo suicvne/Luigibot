@@ -1,0 +1,159 @@
+﻿using DiscordSharp.Commands;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Luigibot
+{
+    public class BaseOwnerModule : IModule
+    {
+        private Luigibot mainEntry;
+
+        public BaseOwnerModule(Luigibot main)
+        {
+            mainEntry = main;
+            Name = "base";
+            Description = "The base set of modules that cannot be enabled or disabled by the user.";
+        }
+
+        public override void Install(CommandsManager manager)
+        {
+            manager.AddCommand(new CommandStub("selfdestruct", "Shuts the bot down.", "", PermissionType.Owner, cmdArgs =>
+            {
+                //mainEntry.Exit();
+            }), this);
+            manager.AddCommand(new CommandStub("giveperm", "Gives the perm to the specified user (bot scope)", "", PermissionType.Owner, 2, e =>
+            {
+                //giveperm Admin <@2309208509852>
+                if (e.Args.Count > 1)
+                {
+                    string permString = e.Args[0];
+                    PermissionType type = PermissionType.User;
+                    switch (permString.ToLower())
+                    {
+                        case "admin":
+                            type = PermissionType.Admin;
+                            break;
+                        case "mod":
+                            type = PermissionType.Mod;
+                            break;
+                        case "none":
+                            type = PermissionType.None;
+                            break;
+                        case "user":
+                            type = PermissionType.User;
+                            break;
+                    }
+                    string id = e.Args[1].Trim(new char[] { '<', '@', '>' });
+                    manager.AddPermission(id, type);
+                    manager.Client.SendMessage($"Given permission {type.ToString().Substring(type.ToString().IndexOf('.') + 1)} to <@{id}>!", e.Channel);
+                }
+            }), this);
+
+            manager.AddCommand(new CommandStub("disablemodule", "Disables a module by name", "The module name is case insensitive.", PermissionType.Owner, 1, cmdArgs =>
+            {
+                if (cmdArgs.Args[0].Length > 0)
+                {
+                    if (!manager.ModuleEnabled(cmdArgs.Args[0]))
+                    {
+                        manager.Client.SendMessage("Module already disabled!", cmdArgs.Channel);
+                        return;
+                    }
+                    try
+                    {
+                        manager.DisableModule(cmdArgs.Args[0]);
+                        manager.Client.SendMessage($"Disabled {cmdArgs.Args[0]}.", cmdArgs.Channel);
+                    }
+                    catch (Exception ex)
+                    { manager.Client.SendMessage($"Couldn't disable module! {ex.Message}", cmdArgs.Channel); }
+                }
+                else
+                {
+                    manager.Client.SendMessage("What module?", cmdArgs.Channel);
+                }
+            }), this);
+
+            manager.AddCommand(new CommandStub("enablemodule", "Disables a module by name", "The module name is case insensitive.", PermissionType.Owner, 1, cmdArgs =>
+            {
+                if (cmdArgs.Args[0].Length > 0)
+                {
+                    if (manager.ModuleEnabled(cmdArgs.Args[0]))
+                    {
+                        manager.Client.SendMessage("Module already enabled!", cmdArgs.Channel);
+                        return;
+                    }
+                    try
+                    {
+                        manager.EnableModule(cmdArgs.Args[0]);
+                        manager.Client.SendMessage($"Enabled {cmdArgs.Args[0]}.", cmdArgs.Channel);
+                    }
+                    catch (Exception ex)
+                    { manager.Client.SendMessage($"Couldn't enable module! {ex.Message}", cmdArgs.Channel); }
+                }
+                else
+                {
+                    manager.Client.SendMessage("What module?", cmdArgs.Channel);
+                }
+            }), this);
+
+            manager.AddCommand(new CommandStub("modules", "Lists all the modules and whether or not they're enabled.", "",
+                PermissionType.Owner, cmdArgs =>
+                {
+                    string msg = $"**Modules**";
+                    foreach (var kvp in manager.Modules)
+                    {
+                        msg += $"\n`{kvp.Key.Name}` - {kvp.Value.ToString()}";
+                    }
+                    manager.Client.SendMessage(msg, cmdArgs.Channel);
+                }));
+
+            manager.AddCommand(new CommandStub("changeprefix", "Changes the command prefix to a specified character.", "", PermissionType.Owner, 1, cmdArgs =>
+            {
+                //if (cmdArgs.Args.Count > 0)
+                //{
+                //    char oldPrefix = mainEntry.config.CommandPrefix;
+                //    try
+                //    {
+                //        char newPrefix = cmdArgs.Args[0][0];
+                //        mainEntry.config.CommandPrefix = newPrefix;
+                //        manager.Client.SendMessage($"Command prefix changed to **{mainEntry.config.CommandPrefix}** successfully!");
+                //    }
+                //    catch (Exception)
+                //    {
+                //        manager.Client.SendMessage($"Unable to change prefix to `{cmdArgs.Args[0][0]}`. Falling back to `{oldPrefix}`.");
+                //        mainEntry.config.CommandPrefix = oldPrefix;
+                //    }
+                //}
+                //else
+                //    manager.Client.SendMessage("What prefix?");
+            }));
+
+            manager.AddCommand(new CommandStub("flush", "Flushes various internal DiscordSharp caches.", "Flushes either `offline` or `messages`. \n  `offline` as parameter will flush offline users from the current server.\n  `messages` will flush the internal message log.", PermissionType.Owner, 1, cmdArgs =>
+            {
+                if (cmdArgs.FromIntegration.ToLower().Trim() == "discord")
+                {
+                    manager.Client.SendMessage($"Coming soon!", cmdArgs.Channel);
+                    //if (cmdArgs.Args.Count > 0)
+                    //{
+                    //    if (cmdArgs.Args[0].ToLower().Trim() == "offline")
+                    //    {
+                    //        int flushedCount = manager.Client.ClearOfflineUsersFromServer(cmdArgs.Channel.Parent);
+                    //        cmdArgs.Channel.SendMessage($"Flushed {flushedCount} offliners from {cmdArgs.Channel.Parent.Name}.");
+                    //    }
+                    //    else if (cmdArgs.Args[0].ToLower().Trim() == "messages")
+                    //    {
+                    //        int flushedCount = manager.Client.ClearInternalMessageLog();
+                    //        cmdArgs.Channel.SendMessage($"Flushed {flushedCount} messages from the internal message log.");
+                    //    }
+                    //}
+                    //else
+                    //{
+                    //    cmdArgs.Channel.SendMessage("Flush what? The toilet?");
+                    //}
+                }
+            }), this);
+        }
+    }
+}

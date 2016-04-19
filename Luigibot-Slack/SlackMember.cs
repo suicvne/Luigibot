@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LuigibotCommon.Integrations;
+using System;
 
 namespace LuigibotSlack
 {
@@ -7,7 +8,7 @@ namespace LuigibotSlack
 		Bot, User, Admin, Owner
 	}
 
-	public class SlackMember
+	public class SlackMember : IMember
 	{
 		public string Name {get;set;}
 		public string ID {get;set;}
@@ -16,6 +17,11 @@ namespace LuigibotSlack
 		public string RealName { get; set;}
 		public string FirstName { get; set; }
 		public string LastName { get; set; }
+
+        public string Mention()
+        {
+            return $"<@{ID}>";
+        }
 
 		public SlackMember (SlackAPI.User user)
 		{
