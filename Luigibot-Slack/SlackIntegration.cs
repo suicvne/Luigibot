@@ -18,6 +18,15 @@ namespace LuigibotSlack
 		public event EventHandler<EventArgs> Connected;
         #endregion
 
+        public ConsoleColor LogColor
+        {
+            get
+            {
+                return ConsoleColor.Green;
+            }
+            set { }
+        }
+
         public string BoldText(string text)
         {
             return $"*{text}*";
@@ -37,6 +46,8 @@ namespace LuigibotSlack
 
         public event EventHandler<IMessageReceivedEventArgs> MessageReceived;
         public event EventHandler<IMessageReceivedEventArgs> MentionReceived;
+        public event EventHandler<IErrorReceivedEventArgs> ErrorReceived;
+        public event EventHandler<IConnectionClosedEventArgs> ConnectionClosed;
 
 		public SlackSocketClient RawClient {get{return client;}}
 		SlackSocketClient client;

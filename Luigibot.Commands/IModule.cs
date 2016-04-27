@@ -39,9 +39,9 @@ namespace DiscordSharp.Commands
             {
                 foreach (var command in manager.Commands)
                 {
-                    var thisModulesCommand = Commands.Find(x => x.ID == command.ID && x.Parent.Name == this.Name); //compare modules by name just in case
+                    var thisModulesCommand = Commands.Select(x => x.ID == command.Value.ID && x.Parent.Name == Name);
                     if (thisModulesCommand != null)
-                        manager.Commands.Remove(command);
+                        manager.Commands.Remove(command.Key);
                 }
             }
         }

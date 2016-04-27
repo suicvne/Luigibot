@@ -59,7 +59,6 @@ namespace Luigibot2
                     js.Serialize(jsw, this.settings);
                 }
             }
-
         }
 
     }

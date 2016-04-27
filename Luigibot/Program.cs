@@ -7,12 +7,39 @@ using System.Collections.Generic;
 using LuigibotCommon.Integrations;
 using System.Threading.Tasks;
 using Luigibot.Discord;
+using SlackAPI;
 
 namespace Luigibot
 {
     enum IntegrationType
     {
         Discord, Slack, IRC
+    }
+
+    public class ReflectionTest
+    {
+        IntegrationProcessManager Manager;
+
+        public ReflectionTest()
+        {
+            Manager = new IntegrationProcessManager();
+            
+            Console.WriteLine("Detected integrations.\n\n");
+            foreach(var integrationName in Manager.Configuration.Integrations)
+            {
+                Console.WriteLine(integrationName.Key + " at " + integrationName.Value);
+            }
+        }
+
+        public void Start()
+        {
+            Manager.BeginIntegrations();
+        }
+
+        public void End()
+        {
+            Manager.SaveSettings();
+        }
     }
 
     public class Luigibot
@@ -71,6 +98,18 @@ namespace Luigibot
 
         private void SetupIntegrations()
         {
+            string discordToken = "", slackToken = "";
+            try
+            {
+                discordToken = System.IO.File.ReadAllText("discord_token.txt");
+                slackToken = System.IO.File.ReadAllText("slack_token.txt");
+            }
+            catch(System.IO.FileNotFoundException)
+            {
+                Console.WriteLine("Missing tokens! discord_token.txt, slack_token.txt");
+                Environment.Exit(0);
+            }
+
             IntegrationThreads.Clear();
             foreach (IntegrationType integration in Enum.GetValues(typeof(IntegrationType)))
             {
@@ -79,7 +118,7 @@ namespace Luigibot
                     IntegrationCancellations[integration] = new CancellationTokenSource();
                     IntegrationThreads[integration] = Task.Run(() =>
                     {
-                        DiscordIntegration discord = new DiscordIntegration("");
+                        DiscordIntegration discord = new DiscordIntegration(discordToken);
                         SetupCommands(IntegrationType.Discord, discord);
 
                         discord.StartIntegration();
@@ -87,6 +126,13 @@ namespace Luigibot
                         discord.Connected += (sender, e) =>
                         {
                             Log(IntegrationType.Discord, $"Discord connected!");
+                        };
+                        discord.ConnectionClosed += (sender, e) =>
+                        {
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.Write("[Discord Error]: ");
+                            Console.ForegroundColor = ConsoleColor.White;
+                            Console.Write($"Socket Closed. Code: {e.Code}, Reason: {e.Reason}, Clean?: {e.Clean}\n");
                         };
                         discord.MessageReceived += (sender, e) =>
                         {
@@ -107,7 +153,7 @@ namespace Luigibot
                     IntegrationCancellations[integration] = new CancellationTokenSource();
                     IntegrationThreads[integration] = Task.Run(() =>
                     {
-                        SlackIntegration slackClient = new SlackIntegration("");
+                        SlackIntegration slackClient = new SlackIntegration(slackToken);
                         SetupCommands(IntegrationType.Slack, slackClient);
 
                         slackClient.StartIntegration();
@@ -140,7 +186,6 @@ namespace Luigibot
                 if (IntegrationThreads.ContainsKey(integration))
                 {
                     IntegrationCancellations[integration].Cancel(false);
-                    
                 }
             }
         }
@@ -150,10 +195,16 @@ namespace Luigibot
 	{
 		public static void Main (string[] args)
 		{
-            var luigibot = new Luigibot();
-            luigibot.Begin();
-			Console.ReadLine ();
-            luigibot.End();
+            var reflections = new ReflectionTest();
+            reflections.Start();
+            Console.ReadLine();
+            reflections.End();
+
+
+   //         var luigibot = new Luigibot();
+   //         luigibot.Begin();
+			//Console.ReadLine ();
+   //         luigibot.End();
 		}
 	}
 }

@@ -18,10 +18,22 @@ namespace Luigibot.Discord
         public override string Text { get; set; }
     }
 
+    public class DiscordConnectionClosedEventArgs : IConnectionClosedEventArgs
+    { }
+
     public class DiscordIntegration : IIntegration
     {
         private DiscordClient client;
         public DiscordClient GetRawClient() => client;
+
+        public ConsoleColor LogColor
+        {
+            get
+            {
+                return ConsoleColor.DarkMagenta;
+            }
+            set { }
+        }
 
         public string BoldText(string text)
         {
@@ -52,7 +64,7 @@ namespace Luigibot.Discord
         {
             get
             {
-                return "discord";
+                return "Discord";
             }
             set
             {}
@@ -71,6 +83,8 @@ namespace Luigibot.Discord
         public event EventHandler<EventArgs> Connected;
         public event EventHandler<IMessageReceivedEventArgs> MessageReceived;
         public event EventHandler<IMessageReceivedEventArgs> MentionReceived;
+        public event EventHandler<IErrorReceivedEventArgs> ErrorReceived;
+        public event EventHandler<IConnectionClosedEventArgs> ConnectionClosed;
 
         public void SendMessage(string text, IChannel target)
         {
@@ -88,7 +102,16 @@ namespace Luigibot.Discord
                 {
                     Connected?.Invoke(this, null);
                 };
-
+                client.SocketClosed += (sender, e) =>
+                {
+                    IConnectionClosedEventArgs args = new DiscordConnectionClosedEventArgs
+                    {
+                        Code = e.Code,
+                        Reason = e.Reason,
+                        Clean = e.WasClean
+                    };
+                    ConnectionClosed?.Invoke(this, args);
+                };
                 client.MessageReceived += (sender, e) =>
                 {
                     DiscordMessageReceivedEventArgs args = new DiscordMessageReceivedEventArgs
@@ -110,7 +133,7 @@ namespace Luigibot.Discord
                     MentionReceived?.Invoke(this, args);
                 };
                 client.SendLoginRequest();
-                client.Connect();
+                client.Connect(true /*use the .Net ClientWebSocket vs. WebSocketSharp*/);
             });
         }
 

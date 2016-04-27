@@ -38,8 +38,8 @@ namespace DiscordSharp.Commands
 
         public Random rng = new Random((int)DateTime.Now.Ticks);
 
-        private List<ICommand> __commands;
-        public List<ICommand> Commands
+        private Dictionary<string, ICommand> __commands;
+        public Dictionary<string, ICommand> Commands
         {
             get { return __commands; }
         }
@@ -83,7 +83,7 @@ namespace DiscordSharp.Commands
         public CommandsManager(IIntegration client)
         {
             __client = client;
-            __commands = new List<ICommand>();
+            __commands = new Dictionary<string, ICommand>();
             __modules = new Dictionary<IModule, bool>();
             __internalUserRoles = new Dictionary<string, PermissionType>();
             Console.Write("");
@@ -148,7 +148,7 @@ namespace DiscordSharp.Commands
             string[] split = rawCommandText.Split(new char[] { ' ' }); //splits into args and stuff
             try
             {
-                var command = __commands.Find(x => x.CommandName == split[0]);
+                var command = __commands[split[0]];
 
                 if (command != null && command.Parent != null) //if it's a generic command without a parent then don't bother doing this.
                 {
@@ -239,7 +239,7 @@ namespace DiscordSharp.Commands
         /// Adds a generic command without an associated module.
         /// </summary>
         /// <param name="command"></param>
-        public void AddCommand(ICommand command) => __commands.Add(command);
+        public void AddCommand(ICommand command) => __commands.Add(command.CommandName, command);
 
         /// <summary>
         /// Adds a command with an assosciated module.
@@ -259,7 +259,7 @@ namespace DiscordSharp.Commands
                     __modules[fromModule] = true;
             }
 
-            __commands.Add(command);
+            __commands.Add(command.CommandName, command);
         }
     }
 }

@@ -19,7 +19,11 @@ namespace LuigibotCommon.Integrations
 
 		event EventHandler<IMessageReceivedEventArgs> MessageReceived;
         event EventHandler<IMessageReceivedEventArgs> MentionReceived;
+        event EventHandler<IErrorReceivedEventArgs> ErrorReceived;
+        event EventHandler<IConnectionClosedEventArgs> ConnectionClosed;
 		event EventHandler<EventArgs> Connected;
+
+        ConsoleColor LogColor { get; set; }
 
 		void StartIntegration();
 		void StopIntegration();

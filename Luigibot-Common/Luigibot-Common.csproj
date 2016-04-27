@@ -31,8 +31,12 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CommonFunction.cs" />
+    <Compile Include="Integrations\IConnectionClosedEventArgs.cs" />
+    <Compile Include="Integrations\IErrorReceivedEventArgs.cs" />
     <Compile Include="Integrations\IMember.cs" />
     <Compile Include="Integrations\IMessageReceivedEventArgs.cs" />
+    <Compile Include="Integrations\LuigibotEntryPoint.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Integrations\IIntegration.cs" />
     <Compile Include="Integrations\IChannel.cs" />
