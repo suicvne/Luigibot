@@ -30,11 +30,19 @@ namespace Luigibot
         [JsonProperty("command_prefixes")]
         public Dictionary<string, char> Prefixes { get; set; }
 
+        /// <summary>
+        /// A dictionary of the owners.
+        /// Key is the integration and the value is the owner's ID in the integration.
+        /// </summary>
+        [JsonProperty("owners")]
+        public Dictionary<string, string> Owners { get; set; }
+
         public IntegrationConfiguration()
         {
             Integrations = new Dictionary<string, string>();
             Prefixes = new Dictionary<string, char>();
             IntegrationsEnabled = new Dictionary<string, bool>();
+            Owners = new Dictionary<string, string>();
         }
         
         public bool IntegrationEnabled(string key)

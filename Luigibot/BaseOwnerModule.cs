@@ -9,10 +9,10 @@ namespace Luigibot
 {
     public class BaseOwnerModule : IModule
     {
-        private Luigibot mainEntry;
+        private IntegrationProcessManager mainEntry;
         private DateTime InitializeTime;
 
-        public BaseOwnerModule(Luigibot main)
+        public BaseOwnerModule(IntegrationProcessManager main)
         {
             mainEntry = main;
             InitializeTime = DateTime.Now;
@@ -26,6 +26,34 @@ namespace Luigibot
             {
                 //mainEntry.Exit();
             }), this);
+            manager.AddCommand(new CommandStub("stopintegration", "Stops an integrations.", "", PermissionType.Owner, 1, cmdArgs =>
+            {
+                if (cmdArgs.Args.Count > 0)
+                {
+                    if (cmdArgs.FromIntegration.ToLower().Trim() == cmdArgs.Args[0].ToLower().Trim())
+                    {
+                        manager.Integration.SendMessage("You can't stop the integration you're running me from, silly!", cmdArgs.Channel);
+                        return;
+                    }
+                    mainEntry.StopIntegration(cmdArgs.Args[0]);
+                }
+                else
+                    manager.Integration.SendMessage("Stop what?", cmdArgs.Channel);
+            }));
+            manager.AddCommand(new CommandStub("startintegration", "Starts an integrations.", "", PermissionType.Owner, 1, cmdArgs =>
+            {
+                if (cmdArgs.Args.Count > 0)
+                {
+                    if (cmdArgs.FromIntegration.ToLower().Trim() == cmdArgs.Args[0].ToLower().Trim())
+                    {
+                        manager.Integration.SendMessage("what kind of paradox are you trying to create", cmdArgs.Channel);
+                        return;
+                    }
+                    mainEntry.StartIntegration(cmdArgs.Args[0]);
+                }
+                else
+                    manager.Integration.SendMessage("Start what?", cmdArgs.Channel);
+            }));
             manager.AddCommand(new CommandStub("giveperm", "Gives the perm to the specified user (bot scope)", "", PermissionType.Owner, 2, e =>
             {
                 //giveperm Admin <@2309208509852>

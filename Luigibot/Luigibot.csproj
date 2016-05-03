@@ -53,8 +53,10 @@
     <Compile Include="IntegrationConfiguration.cs" />
     <Compile Include="IntegrationProcessManager.cs" />
     <Compile Include="OS.cs" />
+    <Compile Include="OwnerSetup.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RandomCodeGenerator.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Luigibot-Common\Luigibot-Common.csproj">

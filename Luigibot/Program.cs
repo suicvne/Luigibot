@@ -89,11 +89,11 @@ namespace Luigibot
                 CommandManagers[type] = new CommandsManager(integration);
             }
 
-            BaseOwnerModule owner = new BaseOwnerModule(this);
-            owner.Install(CommandManagers[type]);
+            //BaseOwnerModule owner = new BaseOwnerModule(this);
+            //owner.Install(CommandManagers[type]);
 
-            FunModule fModule = new FunModule();
-            fModule.Install(CommandManagers[type]);
+            //FunModule fModule = new FunModule();
+            //fModule.Install(CommandManagers[type]);
         }
 
         private void SetupIntegrations()
